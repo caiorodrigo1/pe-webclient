@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
+
 import { OrgaoService } from '../../orgao.service';
 import { ViacepService } from 'src/app/shared/services/viacep.service';
 import { ExibirMensagemService } from 'src/app/shared/services/exibir-mensagem.service';
@@ -13,6 +14,7 @@ import { Uf, UfOption } from 'src/app/shared/enums/uf.enum';
 import { IEntidade } from 'src/app/shared/models/entidade-response.model';
 import { IEndereco } from 'src/app/shared/models/endereco.model';
 import { IOrgao, Orgao } from 'src/app/shared/models/orgao.model';
+
 @Component({
   selector: 'top-orgao-atualizar',
   templateUrl: './orgao-atualizar.component.html',
@@ -22,13 +24,17 @@ export class OrgaoAtualizarComponent implements OnInit, OnDestroy {
   acao: string = 'Criar';
   orgao?: IOrgao;
   ufs: UfOption[] = [];
+
   clienteId: number | undefined;
+
   incricaoOrgao!: Subscription;
   inscricaoEndereco!: Subscription;
   inscricaoUsuarioLogado!: Subscription;
   inscricaoServico!: Subscription;
+
   carregando: boolean = true;
   salvando: boolean = false;
+
   editForm = this.fb.group({
     clienteId: [0],
     id: [this.orgao?.id],
@@ -55,6 +61,7 @@ export class OrgaoAtualizarComponent implements OnInit, OnDestroy {
     principal: [''],
     adicional: [''],
   });
+
   constructor(
     private orgaoService: OrgaoService,
     private viacepService: ViacepService,
@@ -64,23 +71,27 @@ export class OrgaoAtualizarComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder
   ) {}
+
   ngOnInit(): void {
     this.preencherUFs();
     this.buscarOrigem();
     this.buscarRota();
   }
+
   ngOnDestroy(): void {
     if (this.incricaoOrgao) this.incricaoOrgao.unsubscribe();
     if (this.inscricaoEndereco) this.inscricaoEndereco.unsubscribe();
     if (this.inscricaoUsuarioLogado) this.inscricaoUsuarioLogado.unsubscribe();
     if (this.inscricaoServico) this.inscricaoServico.unsubscribe();
   }
+
   private preencherUFs(): void {
     this.ufs = this.ufs = Object.keys(Uf).map((key) => ({
       nome: Uf[key as keyof typeof Uf],
       valor: key,
     }));
   }
+
   private buscarOrigem(): void {
     this.inscricaoUsuarioLogado = this.usuarioLogadoService
       .consultarUsuarioLogado()
@@ -88,6 +99,7 @@ export class OrgaoAtualizarComponent implements OnInit, OnDestroy {
         this.clienteId = resposta.clienteId;
       });
   }
+
   private buscarRota(): void {
     this.activatedRoute.paramMap.subscribe((valor) => {
       const id = valor.get('id');
@@ -99,6 +111,7 @@ export class OrgaoAtualizarComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   private consultarOrgao$(id: number): void {
     this.incricaoOrgao = this.orgaoService.consultarOrgao(id).subscribe({
       next: (resposta: HttpResponse<IEntidade>) => {
@@ -113,6 +126,7 @@ export class OrgaoAtualizarComponent implements OnInit, OnDestroy {
       },
     });
   }
+
   private atualizarFormulario(): void {
     this.editForm.patchValue({
       id: this.orgao?.id || undefined,
@@ -126,17 +140,6 @@ export class OrgaoAtualizarComponent implements OnInit, OnDestroy {
       cidade: this.orgao?.endereco?.cidade,
       ibge: this.orgao?.endereco?.ibge,
       logradouro: this.orgao?.endereco?.logradouro,
-
-    
-          
-            
-    
-
-          
-          Expand Down
-    
-    
-  
       bairro: this.orgao?.endereco?.bairro,
       numero: this.orgao?.endereco?.numero,
       complemento: this.orgao?.endereco?.complemento,
@@ -146,13 +149,17 @@ export class OrgaoAtualizarComponent implements OnInit, OnDestroy {
     console.log(this.orgao);
     this.editForm.markAllAsTouched();
   }
+
   protected cancelar(): void {
     this.router.navigate(['orgao']);
   }
+
   protected salvar(): void {
     if (this.editForm.valid) {
       this.salvando = true;
+
       const orgao = this.criarFormulario();
+
       if (orgao.id === undefined) {
         this.chamarServico(this.orgaoService.incluirOrgao(orgao), 'criado');
       } else {
@@ -163,6 +170,7 @@ export class OrgaoAtualizarComponent implements OnInit, OnDestroy {
       }
     }
   }
+
   private criarFormulario(): IOrgao {
     return {
       ...new Orgao(),
@@ -188,6 +196,7 @@ export class OrgaoAtualizarComponent implements OnInit, OnDestroy {
       },
     };
   }
+
   private chamarServico(
     resultado: Observable<HttpResponse<IEntidade>>,
     acao: string
@@ -200,6 +209,7 @@ export class OrgaoAtualizarComponent implements OnInit, OnDestroy {
       },
     });
   }
+
   private seguir_sucesso(acao: string): void {
     this.exibirMensagemService.mensagem('success', 'Serviço de Mensagem', [
       `${this.recipiente} ${acao} com sucesso.`,
@@ -207,16 +217,19 @@ export class OrgaoAtualizarComponent implements OnInit, OnDestroy {
     this.salvando = false;
     this.router.navigate(['orgao']);
   }
+
   private exibirErro(codigo: string, acao: string, nome: string): void {
     let erro = (CodigosErro as Record<string, string>)[codigo];
     if (erro === undefined) erro = `Erro ao ${acao} ${nome}`;
     this.exibirMensagemService.mensagem('error', 'Serviço de Mensagem', [erro]);
     this.salvando = false;
   }
+
   protected testarCep() {
     const cep = this.editForm.get('cep')?.value;
     if (cep && cep.length === 8) this.buscarEndereco(cep);
   }
+
   private buscarEndereco(cep: string) {
     this.inscricaoEndereco = this.viacepService.consultarCep(cep).subscribe({
       next: (resposta: HttpResponse<IEndereco>) => {
@@ -226,11 +239,13 @@ export class OrgaoAtualizarComponent implements OnInit, OnDestroy {
       error: () => this.exibirErro('', 'Buscar', 'CEP'),
     });
   }
+
   private escreverEndereco(endereco: IEndereco | null) {
     if (endereco!.erro) {
       this.editForm.get('cep')!.setErrors({ invalido: true });
       return;
     }
+
     this.editForm.patchValue({
       cidade: endereco!.localidade,
       uf: endereco!.uf ? { valor: endereco!.uf } : null,
