@@ -1,37 +1,22 @@
-<main
-  id="sidebar"
-  data-scrollbar="true"
-  class="app-sidebar app-sidebar-mobile-toggled bg-white shadow"
-  style="overflow: auto"
->
+<main id="sidebar" data-scrollbar="true" class="app-sidebar app-sidebar-mobile-toggled bg-white shadow"
+  style="overflow: auto">
   <div class="app-sidebar-content" data-height="100%">
     <div class="menu">
       <div class="menu-profile text-center">
-        <a
-          href="#"
-          class="menu-profile-link"
-          data-toggle="app-sidebar-profile"
-          data-target="#appSidebarProfileMenu"
-        >
-          <img
-            class="img-fluid"
-            style="width: 98px"
-            [src]="logoSidebar"
-            [alt]="altSidebar"
-          />
+        <a href="#" class="menu-profile-link" data-toggle="app-sidebar-profile" data-target="#appSidebarProfileMenu">
+          <img class="img-fluid" style="width: 98px" [src]="logoSidebar" [alt]="altSidebar" />
           <!-- <h5 class="pt-3 text-uppercase text-center">{{ usuario.cliente }}</h5> -->
-          <h5 class="pt-3 text-uppercase text-center">
+          <!-- <h5 class="pt-3 text-uppercase text-center">
             Prefeitura de Caiçara do Rio do Vento
-          </h5>
+            </h5> -->
+          <h5 class="pt-3 text-uppercase text-center">
+            Prefeitura Modelo
         </a>
       </div>
 
       <div class="menu-item">
-        <a
-          class="btn btn-lg btn-primary d-block my-3 p-1"
-          (click)="criarNovoProcesso()"
-          ><i class="fa fa-plus fa-lg me-2"></i>Novo Processo</a
-        >
+        <a class="btn btn-lg btn-primary d-block my-3 p-1" (click)="criarNovoProcesso()"><i
+            class="fa fa-plus fa-lg me-2"></i>Novo Processo</a>
       </div>
 
       <!-- <div class="menu-item menu-profile">
@@ -81,12 +66,8 @@
 
       <div class="menu-search my-3">
         <div class="input-group">
-          <input
-            type="text"
-            class="form-control border rounded-start ps-2"
-            placeholder="Busca no menu"
-            (keyup)="appSidebarSearch($event)"
-          />
+          <input type="text" class="form-control border rounded-start ps-2" placeholder="Busca no menu"
+            (keyup)="appSidebarSearch($event)" />
           <button type="button" class="btn btn-white">
             <i class="fa fa-search"></i>
           </button>
@@ -187,7 +168,7 @@
           {{ menu.title }}
           <span class="menu-badge bg-info text-default" *ngIf="menu.badge">{{
             menu.badge
-          }}</span>
+            }}</span>
           <span class="menu-label" *ngIf="menu.label">{{ menu.label }}</span>
         </div>
 
@@ -215,97 +196,53 @@
           {{ menu.title }}
           <span class="menu-badge bg-info text-default" *ngIf="menu.badge">{{
             menu.badge
-          }}</span>
-          <i
-            class="fa fa-paper-plane text-theme ms-5px"
-            *ngIf="menu.highlight"
-          ></i>
+            }}</span>
+          <i class="fa fa-paper-plane text-theme ms-5px" *ngIf="menu.highlight"></i>
         </div>
         <div class="menu-label" *ngIf="menu.label">{{ menu.label }}</div>
         <div class="menu-caret" *ngIf="menu.caret"></div>
       </ng-template>
 
       <!-- sidebar menu -->
-      <div
-        #rla="routerLinkActive"
-        class="menu-item mb-2"
-        *ngFor="let menu of menus"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        [ngClass]="{
+      <div #rla="routerLinkActive" class="menu-item mb-2" *ngFor="let menu of menus" routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }" [ngClass]="{
           expand: menu.state == 'expand',
           'has-sub': menu.submenu.length > 0,
           'd-none': menu.hide
-        }"
-        style="cursor: pointer"
-      >
-        <a
-          class="menu-link"
-          *ngIf="menu.submenu.length > 0"
-          (mouseenter)="showAppSidebarFloatSubMenu(menu.submenu, $event)"
-          (mouseleave)="hideAppSidebarFloatSubMenu()"
-        >
-          <ng-container
-            *ngTemplateOutlet="sidebarMenuNav; context: { menu: menu }"
-          ></ng-container>
+        }" style="cursor: pointer">
+        <a class="menu-link" *ngIf="menu.submenu.length > 0"
+          (mouseenter)="showAppSidebarFloatSubMenu(menu.submenu, $event)" (mouseleave)="hideAppSidebarFloatSubMenu()">
+          <ng-container *ngTemplateOutlet="sidebarMenuNav; context: { menu: menu }"></ng-container>
         </a>
 
-        <a
-          class="menu-link"
-          *ngIf="menu.submenu.length === 0"
-          [routerLink]="acessoRouterLink(menu)"
-        >
-          <ng-container
-            *ngTemplateOutlet="sidebarMenuNav; context: { menu: menu }"
-          ></ng-container>
+        <a class="menu-link" *ngIf="menu.submenu.length === 0" [routerLink]="acessoRouterLink(menu)">
+          <ng-container *ngTemplateOutlet="sidebarMenuNav; context: { menu: menu }"></ng-container>
         </a>
 
         <!-- submenu lvl 1 -->
-        <div
-          class="menu-submenu"
-          *ngIf="menu.submenu.length > 0"
-          [style.display]="
+        <div class="menu-submenu" *ngIf="menu.submenu.length > 0" [style.display]="
             menu.state == 'expand' && !appSettings.appSidebarMinified
               ? 'block'
               : menu.state == 'collapse'
               ? 'none'
               : ''
-          "
-        >
-          <div
-            class="menu-item border-bottom border-gray-300"
-            *ngFor="let menu1 of menu.submenu"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            [ngClass]="{
+          ">
+          <div class="menu-item border-bottom border-gray-300" *ngFor="let menu1 of menu.submenu"
+            routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" [ngClass]="{
               expand: menu1.state == 'expand',
               closed: menu1.state == 'collapsed',
               'has-sub': menu1.submenu,
               'd-none': menu1.hide
-            }"
-            #rla1="routerLinkActive"
-          >
-            <a
-              class="menu-link"
-              *ngIf="menu1.submenu.length > 0"
-              (click)="
+            }" #rla1="routerLinkActive">
+            <a class="menu-link" *ngIf="menu1.submenu.length > 0" (click)="
                 menu1.submenu
                   ? expandCollapseSubmenu($event, menu1, menu.submenu, rla1)
                   : ''
-              "
-            >
-              <ng-template
-                *ngTemplateOutlet="sidebarSubMenuNav; context: { menu: menu1 }"
-              ></ng-template>
+              ">
+              <ng-template *ngTemplateOutlet="sidebarSubMenuNav; context: { menu: menu1 }"></ng-template>
             </a>
-            <a
-              class="menu-link"
-              *ngIf="menu1.submenu.length === 0"
-              [routerLink]="acessoRouterLink(menu1)"
-            >
-              <ng-template
-                *ngTemplateOutlet="sidebarSubMenuNav; context: { menu: menu1 }"
-              ></ng-template>
+            <a class="menu-link" *ngIf="menu1.submenu.length === 0" [routerLink]="acessoRouterLink(menu1)">
+              <ng-template *ngTemplateOutlet="sidebarSubMenuNav; context: { menu: menu1 }"></ng-template>
             </a>
 
             <!-- submenu lvl 2
@@ -432,9 +369,5 @@
 </main>
 <div class="app-sidebar-bg"></div>
 <div class="app-sidebar-mobile-backdrop">
-  <a
-    (click)="alternarMenu()"
-    data-dismiss="app-sidebar-mobile"
-    class="stretched-link"
-  ></a>
+  <a (click)="alternarMenu()" data-dismiss="app-sidebar-mobile" class="stretched-link"></a>
 </div>

@@ -57,7 +57,7 @@ export class TemplateProcessoAtualizarComponent implements OnInit, OnDestroy {
       [
         Validators.required,
         Validators.minLength(9),
-        Validators.maxLength(5000),
+        Validators.maxLength(50000),
       ],
     ],
   });

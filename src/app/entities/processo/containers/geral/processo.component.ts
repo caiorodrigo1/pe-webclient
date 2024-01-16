@@ -362,7 +362,7 @@ export class ProcessoComponent implements OnInit, OnDestroy {
           this.atualizarTotalizadores();
           this.processos = objeto;
           this.carregando = false;
-          console.log('processos:', this.processos);
+          //console.log('processos:', this.processos);
         },
         error: (resposta: HttpErrorResponse) => {
           this.processos = [];
@@ -530,12 +530,12 @@ export class ProcessoComponent implements OnInit, OnDestroy {
 
   protected editar(processo: IProcesso): void {
     this.inscricaoVisualizar = this.processoService
-    .consultarProcesso(processo.id!)
-    .subscribe({
-      next: (resposta: HttpResponse<IEntidade>) => {
-          this.validaComponentService.liberar(true);
+      .consultarProcesso(processo.id!)
+      .subscribe({
+        next: (resposta: HttpResponse<IEntidade>) => {
           const corpo = resposta.body;
           const objeto = corpo!.data || [];
+          this.validaComponentService.liberar(true);
           this.dataService.guardarObjeto({
             recipiente: this.recipiente,
             rota: `processo/${this.rota}`,

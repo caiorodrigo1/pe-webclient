@@ -82,7 +82,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.atualizarTotalizadores();
     //this.logoSidebar = `data:image/png;base64,${this.usuario.logo}`;
-    this.logoSidebar = `/assets/img/logo-cliente.png`;
+    //this.logoSidebar = `/assets/img/logo-cliente.png`;
+    //this.logoSidebar = `/assets/img/logoPendencias.jpeg`;
+    this.logoSidebar = `/assets/img/logo-modelo.png`;
     this.ocultarItensMenus(this.acessoAdministrador);
   }
 

@@ -58,7 +58,7 @@ export class PeticionamentoConcluirComponent implements OnInit, OnDestroy {
       [
         Validators.required,
         Validators.minLength(2),
-        Validators.maxLength(5000),
+        Validators.maxLength(50000),
       ],
     ],
   });

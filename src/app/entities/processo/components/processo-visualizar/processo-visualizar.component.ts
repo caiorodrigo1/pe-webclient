@@ -99,7 +99,7 @@ export class ProcessoVisualizarComponent implements OnInit, OnDestroy {
     numero: [],
     template: [''],
     assunto: ['', Validators.required],
-    conteudo: ['', [Validators.required, Validators.maxLength(5000)]],
+    conteudo: ['', [Validators.required, Validators.maxLength(50000)]],
     observacao: [],
   });
 
@@ -114,7 +114,7 @@ export class ProcessoVisualizarComponent implements OnInit, OnDestroy {
       [
         Validators.required,
         Validators.minLength(9),
-        Validators.maxLength(5000),
+        Validators.maxLength(50000),
       ],
     ],
     observacao: [''],
