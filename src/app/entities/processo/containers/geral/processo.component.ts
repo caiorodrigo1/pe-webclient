@@ -529,11 +529,11 @@ export class ProcessoComponent implements OnInit, OnDestroy {
   }
 
   protected editar(processo: IProcesso): void {
-    this.validaComponentService.liberar(true);
     this.inscricaoVisualizar = this.processoService
-      .consultarProcesso(processo.id!)
-      .subscribe({
-        next: (resposta: HttpResponse<IEntidade>) => {
+    .consultarProcesso(processo.id!)
+    .subscribe({
+      next: (resposta: HttpResponse<IEntidade>) => {
+          this.validaComponentService.liberar(true);
           const corpo = resposta.body;
           const objeto = corpo!.data || [];
           this.dataService.guardarObjeto({
