@@ -1,0 +1,244 @@
+<p-toast
+  position="top-right"
+  key="login-form"
+  styleClass="toast-customizado"
+  hideTransformOptions="translateX(100%)"
+></p-toast>
+
+<main class="login login-v2 fw-bold">
+  <section class="login-cover" [hidden]="true">
+    <div
+      class="login-cover-img"
+      [ngStyle]="{ 'background-image': 'url(' + this.bg + ')' }"
+    ></div>
+    <div class="login-cover-bg"></div>
+  </section>
+
+  <section class="login-container">
+    <div class="caixa-login">
+      <header class="login-header">
+        <div class="brand marca">
+          <div class="titulo">
+            <img id="logo" [src]="logoMarca" alt="Logomarca da Top Solutions" />
+            <b>Top</b>Solutions
+          </div>
+          <small class="subtitulo"> {{ subtitulo }} </small>
+        </div>
+        <div class="icon" [hidden]="true">
+          <i class="fa fa-lock"></i>
+        </div>
+      </header>
+
+      <div class="login-content">
+        <form class="formulario row" role="form" [formGroup]="loginForm">
+          <div
+            *ngIf="buscandoUsuario || entrando_sistema"
+            class="d-flex justify-content-center my-4"
+          >
+            <p-progressSpinner></p-progressSpinner>
+          </div>
+
+          <section *ngIf="!buscandoUsuario && campos" class="row">
+            <div class="p-input-icon-right mt-10px login-dropdown col-md-12">
+              <p-dropdown
+                inputId="campo_clientes"
+                name="cliente"
+                formControlName="cliente"
+                [options]="clientes"
+                placeholder="Selecione o Cliente"
+                [filter]="true"
+                filterBy="nome"
+                filterPlaceholder="Procurar Cliente"
+                emptyFilterMessage="Nenhum resultado encontrado"
+                dataKey="id"
+                [class.ng-invalid]="loginForm.get('cliente')!.invalid"
+                [class.ng-dirty]="loginForm.get('cliente')!.touched"
+              >
+                <ng-template let-item pTemplate="selectedItem">
+                  {{ item.nome }}
+                </ng-template>
+                <ng-template let-item pTemplate="item">
+                  {{ item.nome }}
+                </ng-template>
+              </p-dropdown>
+              <i
+                id="filtroIcone"
+                *ngIf="
+                  loginForm.get('cliente')!.invalid &&
+                  loginForm.get('cliente')!.touched
+                "
+                class="pi pi-exclamation-circle text-danger"
+              ></i>
+            </div>
+
+            <div class="p-input-icon-right mt-20px col-md-12">
+              <input
+                pInputText
+                #usernameInput
+                id="campo_cpf"
+                name="cpf"
+                formControlName="cpf"
+                autocomplete="username"
+                maxlength="11"
+                placeholder="CPF"
+                type="text"
+                class="form-control"
+                [class.ng-invalid]="loginForm.get('cpf')!.invalid"
+                [class.ng-dirty]="loginForm.get('cpf')!.touched"
+              />
+              <i
+                *ngIf="
+                  loginForm.get('cpf')!.invalid && loginForm.get('cpf')!.touched
+                "
+                class="pi pi-exclamation-circle text-danger"
+              ></i>
+            </div>
+
+            <div class="p-input-icon-right form-floating mt-20px col-md-12">
+              <input
+                pInputText
+                #usernameInput
+                id="campo_senha"
+                name="senha"
+                formControlName="senha"
+                autocomplete="password"
+                maxlength="11"
+                placeholder="Senha"
+                type="password"
+                [class.ng-invalid]="loginForm.get('senha')!.invalid"
+                [class.ng-dirty]="loginForm.get('senha')!.touched"
+              />
+              <i
+                *ngIf="
+                  loginForm.get('senha')!.invalid &&
+                  loginForm.get('senha')!.touched
+                "
+                class="pi pi-exclamation-circle text-danger"
+              ></i>
+            </div>
+
+            <div class="form-check mt-20px" [hidden]="true">
+              <input
+                class="form-check-input border-1"
+                type="checkbox"
+                value="1"
+                id="rememberMe"
+                name="rememberMe"
+                formControlName="rememberMe"
+              />
+              <label
+                class="form-check-label fs-13px text-gray-500"
+                for="rememberMe"
+              >
+                Mantenha-me Conectado
+              </label>
+            </div>
+          </section>
+
+          <section class="mt-20px" *ngIf="!autenticado">
+            <button
+              *ngIf="!autenticado"
+              id="bto-acessar"
+              type="submit"
+              (click)="fazerLogin()"
+              class="btn btn-lg btn-primary me-2 w-100"
+              [disabled]="buscandoUsuario"
+            >
+              <i class="fa fa-right-to-bracket fa-lg me-2"></i>
+              Acessar
+            </button>
+          </section>
+
+          <div
+            class="form-floating mb-20px login-dropdown"
+            *ngIf="autenticado && !entrando_sistema"
+          >
+            <p-dropdown
+              id="campo_orgaos"
+              name="orgao"
+              formControlName="orgao"
+              [options]="orgaos"
+              placeholder="Selecione o órgão"
+              [filter]="true"
+              filterBy="sigla"
+              filterPlaceholder="Procurar órgão"
+              emptyFilterMessage="Nenhum resultado encontrado"
+              dataKey="sigla"
+            >
+              <ng-template let-item pTemplate="selectedItem">
+                {{ item.sigla }}
+              </ng-template>
+              <ng-template let-item pTemplate="item">
+                {{ item.sigla }}
+              </ng-template>
+            </p-dropdown>
+          </div>
+
+          <section class="mb-20px" *ngIf="autenticado && !entrando_sistema">
+            <button
+              id="bto-entrar"
+              type="submit"
+              (click)="entrar_Sistema()"
+              class="btn btn-lg btn-primary me-2 w-100"
+            >
+              <i class="fa fa-door-open fa-lg me-2"></i>
+              Entrar
+            </button>
+          </section>
+
+          <div class="text-gray-500 mt-10px" [hidden]="true">
+            Sem acesso ainda? Clique
+            <a href="javascript:;" class="text-red" routerLink="/registro"
+              >aqui</a
+            >
+            para solicitar.
+          </div>
+
+          <section *ngIf="!autenticado">
+            <hr />
+
+            <button
+              id="bto-validar-documento"
+              type="button"
+              class="btn btn-lg btn-white fa-lg me-2 w-100 text-gray-500"
+              routerLink="/validacao-documento"
+            >
+              <i class="fa fa-file-circle-check fa-lg me-2"></i>
+              Validar Documento
+            </button>
+
+            <button
+              id="bto-consulta-publica"
+              type="button"
+              class="btn btn-lg btn-white fa-lg me-2 mt-2 w-100 text-gray-500"
+              routerLink="/consulta-publica"
+            >
+              <i class="fa fa-book-open fa-lg me-2"></i>
+              Consulta Pública
+            </button>
+
+            <button
+              id="bto-peticionamento-cadastrar"
+              type="button"
+              class="btn btn-lg btn-white fa-lg me-2 mt-2 w-100 text-gray-500"
+              routerLink="/peticionamento-cadastrar"
+            >
+              <i class="fa fa-file-export fa-lg me-2"></i>
+              Peticionamento Externo
+            </button>
+
+            <button
+              id="bto-peticionamento-consultar"
+              type="button"
+              class="btn btn-lg btn-white fa-lg me-2 mt-2 w-100 text-gray-500"
+              routerLink="/peticionamento-consultar"
+            >
+              <i class="fa fa-search fa-lg me-2"></i>
+              Consultar Peticionamento
+            </button>
+          </section>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>

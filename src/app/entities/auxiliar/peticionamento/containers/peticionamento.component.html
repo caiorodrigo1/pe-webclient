@@ -1,0 +1,333 @@
+<top-cabecalho
+  [itens]="['Peticionamentos']"
+  [recipiente]="recipiente"
+  [entidade]="entidade"
+  [botao]="false"
+>
+</top-cabecalho>
+
+<main class="row">
+  <section class="col-xl-12">
+    <!--TAB-NAVS-->
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a
+          #tab_1
+          id="tab1"
+          [href]="tabelas[0]"
+          (click)="mudarTabela(tabelas[0])"
+          data-bs-toggle="tab"
+          class="nav-link"
+          ><h5 class="d-sm-none">Abertos</h5>
+          <h5 class="d-sm-block d-none">Peticionamentos Abertos</h5>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          #tab_2
+          id="tab2"
+          [href]="tabelas[1]"
+          (click)="mudarTabela(tabelas[1])"
+          data-bs-toggle="tab"
+          class="nav-link"
+          ><h5 class="d-sm-none">Concluídos</h5>
+          <h5 class="d-sm-block d-none">Peticionamentos Concluídos</h5>
+        </a>
+      </li>
+    </ul>
+
+    <!--TABELAS-->
+    <section class="tab-content panel rounded-0 p-4">
+      <div id="entidades" class="tab-content p-0">
+        <div class="tab-pane fade show active" id="abertos">
+          <p-table
+            #tabela_1
+            [value]="peticionamentos"
+            styleClass="p-datatable-striped"
+            responsiveLayout="stack"
+            [breakpoint]="'960px'"
+            [selectionPageOnly]="true"
+            dataKey="id"
+            [(selection)]="selecionados"
+            [rowSelectable]="linhaSelecionavel"
+            [globalFilterFields]="globalFilterFields()"
+            [resizableColumns]="true"
+            [columns]="selectedColumns"
+            [reorderableColumns]="true"
+            columnResizeMode="fit"
+            [loading]="carregando"
+            [lazy]="false"
+            (onLazyLoad)="lazyLoad($event)"
+            [scrollable]="true"
+            scrollHeight="auto"
+          >
+            <ng-template pTemplate="caption">
+              <div class="d-flex justify-content-between align-items-center">
+                <p-multiSelect
+                  inputId="multiSelect1"
+                  [options]="cols"
+                  [(ngModel)]="selectedColumns"
+                  optionLabel="header"
+                  selectedItemsLabel="{0} colunas selecionadas"
+                  [style]="{ 'min-width': '200px' }"
+                  placeholder="Selecionar colunas"
+                  class="selectColumns mx-2"
+                >
+                </p-multiSelect>
+
+                <div
+                  class="d-flex justify-content-between align-items-center w-100"
+                >
+                  <span class="p-input-icon-left globalSearch w-100">
+                    <i class="pi pi-search p-input-icon-top"></i>
+                    <input
+                      id="globalFilter1"
+                      [(ngModel)]="globalFilter"
+                      pInputText
+                      type="text"
+                      (input)="
+                        tabela_1.filterGlobal(
+                          $any($event.target).value,
+                          'contains'
+                        )
+                      "
+                      [placeholder]="'Pesquisar ' + recipiente"
+                      class="w-100"
+                    />
+                  </span>
+
+                  <button
+                    pButton
+                    title="Limpar pesquisa"
+                    class="p-button-rounded p-button-info p-button-text"
+                    icon="pi pi-filter-slash"
+                    (click)="atualizarTela(tabela_1)"
+                  ></button>
+                </div>
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  <p-tableHeaderCheckbox
+                    inputId="checkBox1"
+                  ></p-tableHeaderCheckbox>
+                </th>
+                <th
+                  *ngFor="let col of filtrarColunas()"
+                  pResizableColumn
+                  pReorderableColumn
+                  [pSortableColumn]="col.dataMap"
+                >
+                  <div class="top-header">
+                    {{ col.header }}
+                    <p-columnFilter
+                      [type]="col.type"
+                      [field]="col.dataMap"
+                      display="menu"
+                    >
+                    </p-columnFilter>
+
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                  </div>
+                </th>
+                <th>Opções</th>
+              </tr>
+            </ng-template>
+
+            <ng-template
+              pTemplate="body"
+              let-item
+              let-columns="selectedColumns"
+              let-index="rowIndex"
+            >
+              <tr [pSelectableRow]="item" [pReorderableRow]="index">
+                <td>
+                  <div
+                    class="btn-group d-flex justify-content-between align-items-center"
+                  >
+                    <p-tableCheckbox
+                      [inputId]="'checkBox1-' + item.id"
+                      [value]="item"
+                    ></p-tableCheckbox>
+                    <!-- <span
+                      class="pi pi-list"
+                      [pReorderableRowHandle]="index"
+                    ></span> -->
+                  </div>
+                </td>
+                <td *ngFor="let col of filtrarColunas()">
+                  <div
+                    [innerHTML]="item | getData : col.dataMap | bindField : col"
+                  ></div>
+                </td>
+                <td>
+                  <div id="processoOpcoes" class="d-flex flex-nowrap">
+                    <button
+                      type="button"
+                      class="btn text-primary mx-1 top-btn"
+                      tooltipPosition="top"
+                      pTooltip="Concluir Peticionamento"
+                      (click)="navegarConcluir(item)"
+                    >
+                      <i class="fa-solid fa-check-circle fa-lg"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td></td>
+                <td [attr.colspan]="numCols">
+                  <span>Nenhum registro foi encontrado</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+
+        <div class="tab-pane fade show" id="concluidos">
+          <p-table
+            #tabela_2
+            [value]="peticionamentos"
+            styleClass="p-datatable-striped"
+            responsiveLayout="stack"
+            [breakpoint]="'960px'"
+            [selectionPageOnly]="true"
+            dataKey="id"
+            [(selection)]="selecionados"
+            [rowSelectable]="linhaSelecionavel"
+            [globalFilterFields]="globalFilterFields()"
+            [resizableColumns]="true"
+            [columns]="selectedColumns"
+            [reorderableColumns]="true"
+            columnResizeMode="fit"
+            [loading]="carregando"
+            [lazy]="false"
+            (onLazyLoad)="lazyLoad($event)"
+            [scrollable]="true"
+            scrollHeight="auto"
+          >
+            <ng-template pTemplate="caption">
+              <div class="d-flex justify-content-between align-items-center">
+                <!-- <p-multiSelect
+                  inputId="multiSelect2"
+                  [options]="cols"
+                  [(ngModel)]="selectedColumns"
+                  optionLabel="header"
+                  selectedItemsLabel="{0} colunas selecionadas"
+                  [style]="{ 'min-width': '200px' }"
+                  placeholder="Selecionar colunas"
+                  class="selectColumns mx-2"
+                >
+                </p-multiSelect> -->
+
+                <div
+                  class="d-flex justify-content-between align-items-center w-100"
+                >
+                  <span class="p-input-icon-left globalSearch w-100">
+                    <i class="pi pi-search p-input-icon-top"></i>
+                    <input
+                      id="globalFilter2"
+                      [(ngModel)]="globalFilter"
+                      pInputText
+                      type="text"
+                      (input)="
+                        tabela_1.filterGlobal(
+                          $any($event.target).value,
+                          'contains'
+                        )
+                      "
+                      [placeholder]="'Pesquisar ' + recipiente"
+                      class="w-100"
+                    />
+                  </span>
+
+                  <button
+                    pButton
+                    title="Limpar pesquisa"
+                    class="p-button-rounded p-button-info p-button-text"
+                    icon="pi pi-filter-slash"
+                    (click)="atualizarTela(tabela_1)"
+                  ></button>
+                </div>
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+              <tr>
+                <!-- <th>
+                  <p-tableHeaderCheckbox
+                    inputId="checkBox2"
+                  ></p-tableHeaderCheckbox>
+                </th> -->
+                <th
+                  *ngFor="let col of filtrarColunas()"
+                  pResizableColumn
+                  pReorderableColumn
+                  [pSortableColumn]="col.dataMap"
+                >
+                  <div class="top-header">
+                    {{ col.header }}
+
+                    <p-columnFilter
+                      [type]="col.type"
+                      [field]="col.dataMap"
+                      display="menu"
+                    >
+                    </p-columnFilter>
+
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                  </div>
+                </th>
+                <th></th>
+              </tr>
+            </ng-template>
+
+            <ng-template
+              pTemplate="body"
+              let-item
+              let-columns="selectedColumns"
+              let-index="rowIndex"
+            >
+              <tr [pSelectableRow]="item" [pReorderableRow]="index">
+                <!--<td>
+                  <div
+                    class="btn-group d-flex justify-content-between align-items-center"
+                  >
+                    <p-tableCheckbox
+                      [inputId]="'checkBox2-' + item.id"
+                      [value]="item"
+                    ></p-tableCheckbox>
+                    <span
+                      class="pi pi-list"
+                      [pReorderableRowHandle]="index"
+                    ></span> 
+                  </div>
+                </td>-->
+                <td *ngFor="let col of filtrarColunas()">
+                  <div
+                    [innerHTML]="item | getData : col.dataMap | bindField : col"
+                  ></div>
+                </td>
+                <td></td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td></td>
+                <td [attr.colspan]="numCols">
+                  <span>Nenhum registro foi encontrado</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>

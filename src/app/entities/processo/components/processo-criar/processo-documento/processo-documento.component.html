@@ -1,0 +1,299 @@
+<form
+  name="editForm"
+  class="formulario"
+  role="form"
+  novalidate
+  [formGroup]="editForm"
+>
+  <section class="row">
+    <div class="col-md-6 d-flex flex-column">
+      <label for="campo_tipo_documento" class="label-campo">
+        <strong>Tipo do Documento:</strong>
+      </label>
+      <div class="p-input-icon-right">
+        <p-dropdown
+          inputId="campo_tipo_documento"
+          name="tipo"
+          formControlName="tipo"
+          [options]="tiposDocumento"
+          placeholder="Selecione o tipo de documento que deseja adicionar"
+          [filter]="true"
+          filterBy="nome"
+          filterPlaceholder="Procurar Tipo de documento"
+          emptyFilterMessage="Nenhum resultado encontrado"
+          dataKey="id"
+          (ngModelChange)="onChangeTipoDocumento($event)"
+          [class.ng-invalid]="editForm.get('tipo')!.invalid"
+          [class.ng-dirty]="editForm.get('tipo')!.touched"
+        >
+          <ng-template let-item pTemplate="selectedItem">
+            {{ item.nome }}
+          </ng-template>
+          <ng-template let-item pTemplate="item">
+            {{ item.nome }}
+          </ng-template>
+        </p-dropdown>
+        <i
+          *ngIf="editForm.get('tipo')!.errors?.['required'] && editForm.get('tipo')!.touched"
+          id="filtroIcone"
+          class="pi pi-exclamation-circle text-danger"
+        ></i>
+      </div>
+      <small
+        *ngIf="editForm.get('tipo')!.errors?.['required'] && editForm.get('tipo')!.touched"
+        class="p-error block"
+        >Definir o Tipo de documento é obrigatório</small
+      >
+    </div>
+
+    <div class="col-md-1" style="padding: 0; align-self: flex-end">
+      <button
+        (click)="criarTipo_Documento()"
+        class="btn btn-primary"
+        pTooltip="Criar Tipo de Documento"
+        tooltipPosition="top"
+        style="border-radius: 20px; padding: 10px; display: flex; border: none"
+      >
+        <i class="pi pi-plus"></i>
+      </button>
+    </div>
+
+    <div class="col-md-5">
+      <label for="campo_numero" class="label-campo">
+        <strong>Número:</strong></label
+      >
+      <div class="p-input-icon-right w-100">
+        <input
+          pInputText
+          id="campo_numero"
+          name="numero"
+          formControlName="numero"
+          type="text"
+          maxlength="50"
+          class="p-inputtext-sm"
+          [class.ng-invalid]="editForm.get('numero')!.invalid"
+          [class.ng-dirty]="editForm.get('numero')!.touched"
+        />
+        <i
+          *ngIf="
+            editForm.get('numero')!.invalid && editForm.get('numero')!.touched
+          "
+          class="pi pi-exclamation-circle text-danger"
+        ></i>
+      </div>
+      <small
+        *ngIf="editForm.get('numero')!.errors?.['maxlength']"
+        class="p-error block"
+        >Este campo não pode ter mais de 50 caracteres.</small
+      >
+    </div>
+  </section>
+
+  <section class="row">
+    <div class="col-md-12">
+      <label for="campo_assunto_documento" class="label-campo">
+        <strong>Assunto:</strong></label
+      >
+      <div class="p-input-icon-right w-100">
+        <input
+          pInputText
+          id="campo_assunto_documento"
+          name="assunto"
+          formControlName="assunto"
+          type="text"
+          maxlength="50"
+          class="p-inputtext-sm"
+          [class.ng-invalid]="editForm.get('assunto')!.invalid"
+          [class.ng-dirty]="editForm.get('assunto')!.touched"
+        />
+        <i
+          *ngIf="
+            editForm.get('assunto')!.invalid && editForm.get('assunto')!.touched
+          "
+          class="pi pi-exclamation-circle text-danger"
+        ></i>
+      </div>
+      <small
+        *ngIf="editForm.get('assunto')!.errors?.['required'] && editForm.get('assunto')!.touched"
+        class="p-error block"
+        >O campo assunto é obrigatório</small
+      >
+      <small
+        *ngIf="editForm.get('assunto')!.errors?.['minlength'] && editForm.get('assunto')!.touched"
+        class="p-error block"
+        >Este campo deve ter pelo menos 2 caracteres</small
+      >
+      <small
+        *ngIf="editForm.get('assunto')!.errors?.['maxlength']"
+        class="p-error block"
+        >Este campo não pode ter mais de 50 caracteres.</small
+      >
+    </div>
+  </section>
+
+  <section class="row" *ngIf="templatesDocumento.length > 1">
+    <div class="col-md-12 d-flex flex-column">
+      <label for="campo_template" class="label-campo">
+        <strong>Templates do Documento:</strong></label
+      >
+      <div class="p-input-icon-right">
+        <p-dropdown
+          inputId="campo_template"
+          name="template"
+          formControlName="template"
+          [options]="templatesDocumento"
+          placeholder="Escolha um dos templates do tipo de Documento"
+          dataKey="id"
+          (ngModelChange)="onChangeTemplateDocumento($event)"
+        >
+          <ng-template let-item pTemplate="selectedItem">
+            {{ item.nome }}
+          </ng-template>
+          <ng-template let-item pTemplate="item">
+            {{ item.nome }}
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </div>
+  </section>
+
+  <section class="row">
+    <label class="label-campo"> <strong>Conteúdo:</strong></label>
+    <div
+      class="ckeditor p-float-label col-md-12"
+      [ngClass]="{
+        invalido:
+          editForm.get('conteudo')!.invalid && editForm.get('conteudo')!.touched
+      }"
+    >
+      <ckeditor
+        id="campo_conteudo"
+        name="conteudo"
+        formControlName="conteudo"
+        [editor]="Editor"
+        [config]="editorConfig"
+        (ready)="onReady($event)"
+      ></ckeditor>
+      <i
+        *ngIf="
+          editForm.get('conteudo')!.invalid && editForm.get('conteudo')!.touched
+        "
+        class="pi pi-exclamation-circle text-danger ckeditor-exclamacao-icone"
+      ></i>
+    </div>
+    <small
+      *ngIf="editForm.get('conteudo')!.errors?.['required'] && editForm.get('conteudo')!.touched"
+      class="p-error block"
+      >O campo conteúdo é obrigatório</small
+    >
+    <small
+      *ngIf="editForm.get('conteudo')!.errors?.['minlength'] && editForm.get('conteudo')!.touched"
+      class="p-error block"
+      >Este campo deve ter pelo menos 2 caracteres</small
+    >
+    <small
+      *ngIf="editForm.get('conteudo')!.errors?.['maxlength']"
+      class="p-error block"
+      >Este campo não pode ter mais de 5000 caracteres.</small
+    >
+  </section>
+
+  <section class="mb-3 row">
+    <label for="campo_observacao_documento" class="label-campo">
+      <strong>Observação:</strong></label
+    >
+    <div class="p-float-label p-input-icon-right col-md-12">
+      <textarea
+        pInputTextarea
+        id="campo_observacao_documento"
+        name="observacao"
+        formControlName="observacao"
+        [autoResize]="true"
+        maxlength="300"
+        [class.ng-invalid]="editForm.get('observacao')!.invalid"
+        [class.ng-dirty]="editForm.get('observacao')!.touched"
+      ></textarea>
+      <i
+        id="areaTextoIcone"
+        *ngIf="
+          editForm.get('observacao')!.invalid &&
+          editForm.get('observacao')!.touched
+        "
+        class="pi pi-exclamation-circle text-danger"
+      ></i>
+    </div>
+    <small
+      *ngIf="editForm.get('observacao')!.errors?.['required'] && editForm.get('observacao')!.touched"
+      class="p-error block"
+      >O campo Descrição é obrigatório</small
+    >
+    <small
+      *ngIf="editForm.get('observacao')!.errors?.['minlength'] && editForm.get('observacao')!.touched"
+      class="p-error block"
+      >Este campo deve ter pelo menos 2 caracteres</small
+    >
+    <small
+      *ngIf="editForm.get('observacao')!.errors?.['maxlength']"
+      class="p-error block"
+      >Este campo não pode ter mais de 300 caracteres.</small
+    >
+  </section>
+
+  <section *ngIf="!signatarios" class="w-100 d-flex justify-content-end">
+    <button
+      class="btn btn-primary"
+      [disabled]="!editForm.valid"
+      (click)="adicionarDocumento()"
+    >
+      Adicionar Documento
+    </button>
+  </section>
+
+  <section id="tabelaProcesso" *ngIf="!signatarios">
+    <label class="label-campo">
+      <strong>Documentos Adicionados ao Processo:</strong>
+    </label>
+
+    <div class="card my-2 p-2" *ngIf="documentosAdicionados.length <= 0">
+      Nenhum Documento adicionado
+    </div>
+
+    <div id="entidades">
+      <p-table
+        *ngIf="documentosAdicionados.length > 0"
+        [value]="documentosAdicionados"
+        [scrollable]="true"
+        scrollHeight="400px"
+        emptymessage="Nenhum Documento adicionado"
+        styleClass="p-datatable-striped"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: fit-content">Assunto</th>
+            <th>Tipo de Documento</th>
+            <th>Signatários</th>
+            <th style="width: 30px"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td>{{ item.assunto }}</td>
+            <td>{{ item.tipoDocumento.nome }}</td>
+            <td></td>
+            <td>
+              <button
+                type="button"
+                class="btn text-primary m-0 top-btn"
+                tooltipPosition="top"
+                pTooltip="Excluir Documento"
+                (click)="excluirDocumento(item.numeroDocumento)"
+              >
+                <i class="fa-solid fa-trash fa-lg"></i>
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </section>
+</form>

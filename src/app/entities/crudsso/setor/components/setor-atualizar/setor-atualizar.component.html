@@ -1,0 +1,189 @@
+<top-cabecalho
+  [itens]="[recipiente, acao]"
+  [recipiente]="acao + ' ' + recipiente"
+  [entidade]="recipiente"
+></top-cabecalho>
+
+<main class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header bg-primary p-1"></div>
+
+      <div class="card-body" *ngIf="!carregando">
+        <form
+          class="formulario"
+          name="editForm"
+          role="form"
+          novalidate
+          (ngSubmit)="salvar()"
+          [formGroup]="editForm"
+        >
+          <section class="row" [hidden]="edicao">
+            <div class="col-md-12 d-flex flex-column">
+              <label for="campo_orgao" class="label-campo">
+                <strong>Órgão:</strong>
+                <span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right">
+                <p-dropdown
+                  inputId="campo_orgao"
+                  name="orgao"
+                  formControlName="orgao"
+                  [options]="orgaos"
+                  placeholder="Selecione o órgão"
+                  [filter]="true"
+                  filterBy="sigla"
+                  filterPlaceholder="Procurar Órgão"
+                  emptyFilterMessage="Nenhum resultado encontrado"
+                  dataKey="id"
+                  [class.ng-invalid]="editForm.get('orgao')!.invalid"
+                  [class.ng-dirty]="editForm.get('orgao')!.touched"
+                >
+                  <ng-template let-item pTemplate="selectedItem">
+                    {{ item.sigla }}
+                  </ng-template>
+                  <ng-template let-item pTemplate="item">
+                    {{ item.sigla }}
+                  </ng-template>
+                </p-dropdown>
+                <i
+                  *ngIf="editForm.get('orgao')!.errors?.['required'] && editForm.get('orgao')!.touched"
+                  id="filtroIcone"
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('orgao')!.errors?.['required'] && editForm.get('orgao')!.touched"
+                class="p-error block"
+                >Definir o Orgão é obrigatório</small
+              >
+            </div>
+          </section>
+
+          <section class="row">
+            <div class="col-md-12">
+              <label for="campo_sigla" class="label-campo">
+                <strong>Sigla:</strong>
+                <span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <input
+                  pInputText
+                  id="campo_sigla"
+                  name="sigla"
+                  formControlName="sigla"
+                  type="text"
+                  maxlength="50"
+                  class="p-inputtext-sm"
+                  [class.ng-invalid]="editForm.get('sigla')!.invalid"
+                  [class.ng-dirty]="editForm.get('sigla')!.touched"
+                />
+                <i
+                  *ngIf="
+                    editForm.get('sigla')!.invalid &&
+                    editForm.get('sigla')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('sigla')!.errors?.['required'] && editForm.get('sigla')!.touched"
+                class="p-error block"
+                >Este campo é obrigatório</small
+              >
+              <small
+                *ngIf="editForm.get('sigla')!.errors?.['minlength'] && editForm.get('sigla')!.touched"
+                class="p-error block"
+                >Este campo deve ter pelo menos 2 caracteres</small
+              >
+              <small
+                *ngIf="editForm.get('sigla')!.errors?.['maxlength']"
+                class="p-error block"
+                >Este campo não pode ter mais de 50 caracteres.</small
+              >
+            </div>
+          </section>
+
+          <section class="row">
+            <label for="campo_descricao" class="label-campo">
+              <strong>Descrição:</strong>
+              <span class="text-danger">*</span></label
+            >
+            <div class="p-float-label p-input-icon-right col-md-12">
+              <textarea
+                pInputTextarea
+                id="campo_descricao"
+                name="descricao"
+                formControlName="descricao"
+                [autoResize]="true"
+                maxlength="300"
+                [class.ng-invalid]="editForm.get('descricao')!.invalid"
+                [class.ng-dirty]="editForm.get('descricao')!.touched"
+              ></textarea>
+              <i
+                id="areaTextoIcone"
+                *ngIf="
+                  editForm.get('descricao')!.invalid &&
+                  editForm.get('descricao')!.touched
+                "
+                class="pi pi-exclamation-circle text-danger"
+              ></i>
+            </div>
+            <small
+              *ngIf="editForm.get('descricao')!.errors?.['required'] && editForm.get('descricao')!.touched"
+              class="p-error block"
+              >Este campo é obrigatório</small
+            >
+            <small
+              *ngIf="editForm.get('descricao')!.errors?.['minlength'] && editForm.get('descricao')!.touched"
+              class="p-error block"
+              >Este campo deve ter pelo menos 2 caracteres</small
+            >
+            <small
+              *ngIf="editForm.get('descricao')!.errors?.['maxlength']"
+              class="p-error block"
+              >Este campo não pode ter mais de 300 caracteres.</small
+            >
+          </section>
+
+          <section class="row">
+            <div class="col-md-1">
+              <label class="form-check-label label-campo" for="campo_ativo">
+                <strong>Ativo:</strong>
+              </label>
+              <div>
+                <p-inputSwitch
+                  inputId="campo_ativo"
+                  name="ativo"
+                  formControlName="ativo"
+                ></p-inputSwitch>
+              </div>
+            </div>
+          </section>
+        </form>
+      </div>
+
+      <div class="card-footer bg-white text-end">
+        <button
+          id="bto-voltar"
+          type="button"
+          class="btn btn-white fa-lg me-2"
+          (click)="cancelar()"
+        >
+          <i class="fa fa-arrow-left fa-lg me-2"></i>
+          Voltar
+        </button>
+        <button
+          id="bto-salvar"
+          type="submit"
+          (click)="salvar()"
+          class="btn btn-primary me-2"
+          [disabled]="editForm.invalid || salvando"
+        >
+          <i class="fa fa-save fa-lg me-2"></i>
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

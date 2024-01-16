@@ -1,0 +1,189 @@
+<main id="header" class="app-header app-header-inverse">
+  <section class="navbar-header">
+    <a href="index.html" class="navbar-brand">
+      <img
+        [src]="logoMarca"
+        class="me-2"
+        alt="Logo de Topsolutions"
+        style="width: 50px"
+      />
+      <!-- <img [src]="logoMarca" alt="Logo de {{ usuario.cliente }}" /> 
+      <img [src]="logoMarca" alt="Logo de {{ usuario.cliente }}" />
+      <strong><small>&nbsp;&nbsp;</small>{{ usuario.cliente }}</strong>-->
+      <strong>PE - Processo Eletrônico</strong></a
+    >
+
+    <button
+      type="button"
+      class="navbar-mobile-toggler"
+      data-toggle="app-sidebar-mobile"
+      (click)="alternarMenu()"
+    >
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+  </section>
+
+  <section class="navbar-nav">
+    <!--Pesquisa-->
+    <!-- <div class="navbar-item navbar-form">
+      <form action="" method="POST" name="search">
+        <div class="form-group">
+          <input
+            id="pesquisaHeader"
+            type="text"
+            class="form-control"
+            placeholder="Pesquisa"
+          />
+          <button type="submit" class="btn btn-search">
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+      </form>
+    </div> -->
+
+    <!--Notificações-->
+    <!-- <div class="navbar-item dropdown">
+      <a
+        href="#"
+        data-bs-toggle="dropdown"
+        class="navbar-link dropdown-toggle icon"
+      >
+        <i class="fa fa-bell"></i>
+        <span class="badge">5</span>
+      </a>
+
+      <div class="dropdown-menu media-list dropdown-menu-end">
+        <div class="dropdown-header">Notificações (5)</div>
+        <a href="javascript:;" class="dropdown-item media">
+          <div class="media-left">
+            <i class="fa fa-bug media-object bg-gray-400"></i>
+          </div>
+          <div class="media-body">
+            <h6 class="media-heading">
+              Relatório de erros do servidor
+              <i class="fa fa-exclamation-circle text-danger"></i>
+            </h6>
+            <div class="text-muted fs-10px">Há 3 minutos</div>
+          </div>
+        </a>
+
+        <a href="javascript:;" class="dropdown-item media">
+          <div class="media-left">
+            <img
+              src="../assets/img/user/user-1.jpg"
+              class="media-object"
+              alt=""
+            />
+            <i
+              class="fab fa-facebook-messenger text-blue media-object-icon"
+            ></i>
+          </div>
+          <div class="media-body">
+            <h6 class="media-heading">John Smith</h6>
+            <p>Quisque pulvinar tellus sit amet sem scelerisque tincidunt.</p>
+            <div class="text-muted fs-10px">Há 25 minutos</div>
+          </div>
+        </a>
+        <a href="javascript:;" class="dropdown-item media">
+          <div class="media-left">
+            <img
+              src="../assets/img/user/user-2.jpg"
+              class="media-object"
+              alt=""
+            />
+            <i
+              class="fab fa-facebook-messenger text-blue media-object-icon"
+            ></i>
+          </div>
+          <div class="media-body">
+            <h6 class="media-heading">Olivia</h6>
+            <p>Quisque pulvinar tellus sit amet sem scelerisque tincidunt.</p>
+            <div class="text-muted fs-10px">Há 35 minutos</div>
+          </div>
+        </a>
+        <a href="javascript:;" class="dropdown-item media">
+          <div class="media-left">
+            <i class="fa fa-plus media-object bg-gray-400"></i>
+          </div>
+          <div class="media-body">
+            <h6 class="media-heading">Novo usuário registrado</h6>
+            <div class="text-muted fs-10px">Há 1 hora</div>
+          </div>
+        </a>
+        <a href="javascript:;" class="dropdown-item media">
+          <div class="media-left">
+            <i class="fa fa-envelope media-object bg-gray-400"></i>
+            <i class="fab fa-google text-warning media-object-icon fs-14px"></i>
+          </div>
+          <div class="media-body">
+            <h6 class="media-heading">Novo e-mail de Rogério</h6>
+            <div class="text-muted fs-10px">Há 2 horas</div>
+          </div>
+        </a>
+        <div class="dropdown-footer text-center">
+          <a href="javascript:;" class="text-decoration-none">Ver mais</a>
+        </div>
+      </div>
+    </div> -->
+
+    <!--Setor-->
+    <div class="navbar-item dropdown">
+      <a
+        href="#"
+        class="navbar-link dropdown-toggle align-items-center"
+        data-bs-toggle="dropdown"
+      >
+        <span class="d-md-inline">{{ usuario.setor!.sigla }}</span>
+        <b class="caret ms-6px"></b>
+      </a>
+
+      <div class="dropdown-menu dropdown-menu-end media-list">
+        <div class="dropdown-header">
+          Setores ({{ usuario.setores!.length }})
+        </div>
+        <button
+          *ngFor="let item of usuario.setores"
+          class="dropdown-item media"
+          (click)="trocarSetor(item)"
+        >
+          <div class="media-body">
+            <h6 class="media-heading">
+              {{ item.sigla }}
+            </h6>
+          </div>
+        </button>
+        <div class="dropdown-footer text-center"></div>
+      </div>
+    </div>
+
+    <!--Usuário-->
+    <div class="navbar-item navbar-user dropdown">
+      <a
+        href="#"
+        class="navbar-link dropdown-toggle d-flex align-items-center"
+        data-bs-toggle="dropdown"
+      >
+        <img [src]="imagemUsuario" alt="Imagem do perfil do usuário" />
+        <span class="d-md-inline">{{ usuario.nome }}</span>
+        <b class="caret ms-6px"></b>
+      </a>
+      <div class="dropdown-menu dropdown-menu-end me-1">
+        <!-- <a href="extra_profile.html" class="dropdown-item">Editar Perfil</a>
+        <a
+          href="email_inbox.html"
+          class="dropdown-item d-flex align-items-center"
+        >
+          Inbox
+          <span class="badge bg-danger rounded-pill ms-auto pb-4px">2</span>
+        </a>
+        <a href="calendar.html" class="dropdown-item">Calendário</a>
+        <a href="settings.html" class="dropdown-item">Configurações</a> 
+        <div class="dropdown-divider"></div>
+        -->
+        <a href="javascript:;" class="dropdown-item" (click)="logout()">Sair</a>
+      </div>
+    </div>
+  </section>
+</main>

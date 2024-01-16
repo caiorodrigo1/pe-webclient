@@ -1,0 +1,180 @@
+<main class="m-4">
+  <div class="d-flex flex-column align-items-center">
+    <h2 class="m-3">Validar Documentação Emitida no Sistema</h2>
+
+    <div class="row" *ngIf="!documentoEncontrado">
+      <div class="col-xl-12">
+        <div class="card" style="max-width: 500px">
+          <div class="card-header bg-primary p-1"></div>
+
+          <div class="card-body">
+            <form
+              class="formulario"
+              [formGroup]="validacaoForm"
+              role="form"
+              novalidate
+            >
+              <section class="row">
+                <div class="col-md-12">
+                  <label for="campo_codigo" class="label-campo"
+                    ><strong>Código:</strong
+                    ><span class="text-danger">*</span></label
+                  >
+                  <div class="p-input-icon-right w-100">
+                    <input
+                      pInputText
+                      id="campo_codigo"
+                      name="codigo"
+                      formControlName="codigo"
+                      maxlength="7"
+                      type="text"
+                      class="p-inputtext-sm"
+                      [class.ng-invalid]="validacaoForm.get('codigo')!.invalid"
+                      [class.ng-dirty]="validacaoForm.get('codigo')!.touched"
+                    />
+                  </div>
+                  <small
+                    *ngIf="validacaoForm.get('codigo')!.errors?.['required'] && validacaoForm.get('codigo')!.touched"
+                    class="p-error block"
+                    >Este campo é obrigatório</small
+                  >
+                  <small
+                    *ngIf="validacaoForm.get('codigo')!.errors?.['minlength'] && validacaoForm.get('codigo')!.touched"
+                    class="p-error block"
+                    >Este campo deve ter pelo menos 7 caracteres</small
+                  >
+                </div>
+              </section>
+
+              <section class="row">
+                <div class="col-md-12">
+                  <label for="campo_crc" class="label-campo"
+                    ><strong>CRC:</strong
+                    ><span class="text-danger">*</span></label
+                  >
+                  <div class="p-input-icon-right w-100">
+                    <input
+                      pInputText
+                      id="campo_crc"
+                      name="crc"
+                      formControlName="crc"
+                      maxlength="8"
+                      type="text"
+                      class="p-inputtext-sm"
+                      [class.ng-invalid]="validacaoForm.get('crc')!.invalid"
+                      [class.ng-dirty]="validacaoForm.get('crc')!.touched"
+                    />
+                  </div>
+                  <small
+                    *ngIf="validacaoForm.get('crc')!.errors?.['required'] && validacaoForm.get('crc')!.touched"
+                    class="p-error block"
+                    >Este campo é obrigatório</small
+                  >
+                  <small
+                    *ngIf="validacaoForm.get('crc')!.errors?.['minlength'] && validacaoForm.get('crc')!.touched"
+                    class="p-error block"
+                    >Este campo deve ter pelo menos 8 caracteres</small
+                  >
+                </div>
+              </section>
+            </form>
+          </div>
+
+          <div class="card-footer bg-white text-end">
+            <button
+              id="bto-voltar"
+              type="button"
+              class="btn btn-white fa-lg me-2"
+              routerLink="/login"
+            >
+              <i class="fa fa-arrow-left fa-lg me-2"></i>
+              Voltar
+            </button>
+            <button
+              id="bto-pesquisar"
+              type="submit"
+              (click)="pesquisarDocumento()"
+              class="btn btn-primary me-2"
+              [disabled]="buscando"
+            >
+              <i class="fa fa-search fa-lg me-2"></i>
+              Pesquisar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4" *ngIf="documentoEncontrado">
+    <div class="col-xl-12">
+      <div class="card">
+        <div class="card-header bg-primary p-1"></div>
+
+        <div class="d-flex justify-content-center mt-2">
+          <h3 style="color: #959a9d">
+            Documento referente ao Processo de número
+            {{ documento.processoId }}
+          </h3>
+        </div>
+
+        <div *ngIf="documento.signatarios" class="card" style="margin: 20px">
+          <div class="card-header"><strong>Signatários</strong></div>
+          <div class="d-flex flex-wrap">
+            <div *ngFor="let item of documento.signatarios">
+              <div
+                class="m-2 p-1"
+                style="border: solid 1px #ced4da; border-radius: 5px"
+              >
+                {{ item.nomeUsuario | titlecase }} - {{ item.statusSignatario }}
+                <i
+                  *ngIf="item.statusSignatario === 'ASSINADO'"
+                  class="pi pi-check"
+                ></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div
+            *ngIf="!finalizado && !documentoNaoEncontrado"
+            class="d-flex justify-content-center my-4"
+          >
+            <p-progressSpinner></p-progressSpinner>
+          </div>
+
+          <ngx-extended-pdf-viewer
+            [src]="documento.link! + documento.nome!"
+            [textLayer]="true"
+            (pdfLoaded)="exibir()"
+            [showDrawEditor]="false"
+            [showOpenFileButton]="false"
+            [showTextEditor]="false"
+            [showPresentationModeButton]="true"
+            [zoom]="'page-actual'"
+          ></ngx-extended-pdf-viewer>
+
+          <div *ngIf="documentoNaoEncontrado" class="caixa-erro">
+            <p class="text-danger my-3">
+              Documento não encontrado, verifique se o código e o CRC estão
+              corretos e tente novamente.
+            </p>
+          </div>
+        </div>
+
+        <div class="card-footer bg-white text-end">
+          <button
+            id="bto-voltar-2"
+            type="button"
+            class="btn btn-white fa-lg me-2"
+            routerLink="/login"
+          >
+            <i class="fa fa-arrow-left fa-lg me-2"></i>
+            Voltar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

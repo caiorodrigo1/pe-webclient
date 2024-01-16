@@ -1,0 +1,46 @@
+<!-- <main class="d-flex flex-column align-items-center mb-3">
+  <section class="d-flex justify-content-between w-100">
+    <h1 class="page-header mb-1" (click)="home()" style="cursor: pointer">
+      <small style="color: #1f2225"><i class="fa fa-home"></i> Entrada</small>
+    </h1>
+    <ul class="breadcrumb" *ngIf="recipiente || entidade">
+      <li
+        *ngFor="let item of itens; let i = index"
+        class="breadcrumb-item"
+        [class.active]="i === itens.length - 1"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </section>
+  <div *ngIf="botao" class="ms-auto">
+    <button
+      type="submit"
+      class="btn btn-primary btn-rounded px-4 rounded-pill"
+      (click)="criar()"
+    >
+      <i class="fa fa-plus fa-lg me-2 ms-n2"></i> Criar
+      {{ recipiente }}
+    </button>
+  </div>
+</main> -->
+<div
+  class="page d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4"
+>
+  <h2>{{ recipiente }}</h2>
+
+  <ol class="breadcrumb order-1 order-sm-2" *ngIf="recipiente || entidade">
+    <li class="breadcrumb-item">
+      <div (click)="home()" style="cursor: pointer">
+        <i class="fas fa-house"></i>
+      </div>
+    </li>
+    <li
+      *ngFor="let item of itens; let i = index"
+      class="breadcrumb-item"
+      [class.active]="i === itens.length - 1"
+    >
+      {{ item }}
+    </li>
+  </ol>
+</div>

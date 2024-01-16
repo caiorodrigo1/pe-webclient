@@ -1,0 +1,641 @@
+<top-cabecalho
+  *ngIf="rota !== 'entrada'"
+  [itens]="[entidade, rota]"
+  [recipiente]="buscarExibicaoAtual()"
+  [entidade]="entidade"
+></top-cabecalho>
+
+<p-confirmDialog></p-confirmDialog>
+
+<section class="row" *ngIf="rota === 'entrada'">
+  <div class="col-xl-3 col-md-6">
+    <div class="widget widget-stats bg-green">
+      <div class="stats-icon"><i class="fa fa-pencil"></i></div>
+      <div class="stats-info text-white">
+        <h4>RASCUNHOS</h4>
+      </div>
+
+      <div class="stats-link">
+        <a routerLink="/processo/rascunhos"
+          >Abrir Rascunhos <i class="fa fa-arrow-alt-circle-right"></i
+        ></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="widget widget-stats bg-warning">
+      <div class="stats-icon"><i class="fa fa-star"></i></div>
+      <div class="stats-info text-white">
+        <h4>FAVORITOS</h4>
+      </div>
+
+      <div class="stats-link">
+        <a routerLink="/processo/favoritos"
+          >Abrir Favoritos <i class="fa fa-arrow-alt-circle-right"></i
+        ></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="widget widget-stats bg-blue">
+      <div class="stats-icon"><i class="fa fa-envelope"></i></div>
+      <div class="stats-info text-white">
+        <h4>DISTRIBUÍDOS</h4>
+      </div>
+
+      <div class="stats-link">
+        <a routerLink="/processo/distribuidos"
+          >Abrir Distribuídos <i class="fa fa-arrow-alt-circle-right"></i
+        ></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="widget widget-stats bg-gray">
+      <div class="stats-icon"><i class="fa fa-area-chart"></i></div>
+      <div class="stats-info text-white">
+        <h4>EVOLUÇÃO PROCESSUAL</h4>
+      </div>
+
+      <div class="stats-link">
+        <a routerLink="/dashboard"
+          >Abrir Dashboard <i class="fa fa-arrow-alt-circle-right"></i
+        ></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="row">
+  <section class="col-xl-12">
+    <ul class="nav nav-tabs">
+      <li
+        class="nav-item"
+        [hidden]="
+          rota !== 'nao-tramitados' && rota !== 'rascunhos' && rota !== 'todos'
+        "
+      >
+        <a
+          #tab_0
+          id="rascunhos"
+          href="tabela"
+          (click)="mudarTabela(tabelas[0])"
+          data-bs-toggle="tab"
+          class="nav-link"
+        >
+          <h5 class="d-sm-none">Rascunhos</h5>
+          <h5 class="d-sm-block d-none">
+            Rascunhos de Processo
+            <span *ngIf="tabelaAtual == tabelas[0]" class="badge bg-primary">{{
+              totalizador.rascunhos
+            }}</span>
+          </h5>
+        </a>
+      </li>
+
+      <li
+        class="nav-item"
+        [hidden]="
+          rota !== 'nao-tramitados' &&
+          rota !== 'criados' &&
+          rota !== 'entrada' &&
+          rota !== 'todos'
+        "
+      >
+        <a
+          #tab_1
+          id="criados"
+          href="tabela"
+          (click)="mudarTabela(tabelas[1])"
+          data-bs-toggle="tab"
+          class="nav-link"
+        >
+          <h5 class="d-sm-none">Criados</h5>
+          <h5 class="d-sm-block d-none">
+            Processos Criados
+            <span *ngIf="tabelaAtual == tabelas[1]" class="badge bg-primary">{{
+              totalizador.criados
+            }}</span>
+          </h5>
+        </a>
+      </li>
+
+      <li
+        class="nav-item"
+        [hidden]="
+          rota !== 'tramitados' &&
+          rota !== 'recebidos' &&
+          rota !== 'entrada' &&
+          rota !== 'todos'
+        "
+      >
+        <a
+          #tab_2
+          id="recebidos"
+          href="tabela"
+          class="nav-link"
+          data-bs-toggle="tab"
+          (click)="mudarTabela(tabelas[2])"
+        >
+          <h5 class="d-sm-none">Recebidos</h5>
+          <h5 class="d-sm-block d-none">
+            Processos Recebidos
+            <span
+              *ngIf="tabelaAtual == tabelas[2]"
+              class="badge bg-info text-default"
+              >{{ totalizador.recebidos }}</span
+            >
+          </h5>
+        </a>
+      </li>
+
+      <li
+        class="nav-item"
+        [hidden]="
+          rota !== 'tramitados' && rota !== 'enviados' && rota !== 'todos'
+        "
+      >
+        <a
+          #tab_3
+          id="enviados"
+          href="tabela"
+          data-bs-toggle="tab"
+          class="nav-link"
+          (click)="mudarTabela(tabelas[3])"
+        >
+          <h5 class="d-sm-none">Enviados</h5>
+          <h5 class="d-sm-block d-none">
+            Processos Enviados
+            <span
+              *ngIf="tabelaAtual == tabelas[3]"
+              class="badge bg-info text-default"
+              >{{ totalizador.enviados }}</span
+            >
+          </h5>
+        </a>
+      </li>
+
+      <li
+        class="nav-item"
+        [hidden]="
+          rota !== 'distribuidos' &&
+          rota !== 'distribuidos-recebidos' &&
+          rota !== 'todos'
+        "
+      >
+        <a
+          #tab_5
+          id="distribuidos-recebidos"
+          href="tabela"
+          (click)="mudarTabela(tabelas[5])"
+          data-bs-toggle="tab"
+          class="nav-link"
+        >
+          <h5 class="d-sm-none">Distribuídos Recebidos</h5>
+          <h5 class="d-sm-block d-none">Processos Distribuídos Recebidos</h5>
+        </a>
+      </li>
+
+      <li
+        class="nav-item"
+        [hidden]="
+          rota !== 'distribuidos' &&
+          rota !== 'distribuidos-enviados' &&
+          rota !== 'todos'
+        "
+      >
+        <a
+          #tab_6
+          id="distribuidos-enviados"
+          href="tabela"
+          (click)="mudarTabela(tabelas[6])"
+          data-bs-toggle="tab"
+          class="nav-link"
+        >
+          <h5 class="d-sm-none">Distribuídos Enviados</h5>
+          <h5 class="d-sm-block d-none">Processos Distribuídos Enviados</h5>
+        </a>
+      </li>
+
+      <li
+        class="nav-item"
+        class="nav-item me-2"
+        [hidden]="rota !== 'instituicoes-externas' && rota !== 'todos'"
+      >
+        <a
+          #tab_4
+          id="instituicoes-externas"
+          href="tabela"
+          (click)="mudarTabela(tabelas[4])"
+          data-bs-toggle="tab"
+          class="nav-link"
+        >
+          <h5 class="d-sm-none">Instituições Externas</h5>
+          <h5 class="d-sm-block d-none">Processos em Instituições Externas</h5>
+        </a>
+      </li>
+
+      <li class="nav-item" [hidden]="rota !== 'favoritos' && rota !== 'todos'">
+        <a
+          #tab_7
+          id="favoritos"
+          href="tabela"
+          data-bs-toggle="tab"
+          class="nav-link"
+          (click)="mudarTabela(tabelas[7])"
+        >
+          <h5 class="d-sm-none">Favoritos</h5>
+          <h5 class="d-sm-block d-none">
+            Processos Favoritos
+            <span
+              *ngIf="tabelaAtual == tabelas[7]"
+              class="badge bg-info text-default"
+              >{{ totalizador.favoritos }}</span
+            >
+          </h5>
+        </a>
+      </li>
+
+      <li class="nav-item" [hidden]="rota !== 'arquivados' && rota !== 'todos'">
+        <a
+          #tab_8
+          id="arquivados"
+          href="tabela"
+          data-bs-toggle="tab"
+          class="nav-link"
+          (click)="mudarTabela(tabelas[8])"
+        >
+          <h5 class="d-sm-none">Arquivados</h5>
+          <h5 class="d-sm-block d-none">Processos Arquivados</h5>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="tab-content panel rounded-0 p-4" style="margin: 0 10px">
+    <div id="entidades" class="tab-content p-0">
+      <div class="tab-pane fade show active">
+        <p-table
+          #tabela
+          id="tabela"
+          [value]="processos"
+          styleClass="p-datatable-striped"
+          responsiveLayout="stack"
+          [breakpoint]="'960px'"
+          [selectionPageOnly]="true"
+          dataKey="id"
+          [(selection)]="selecionados"
+          [rowSelectable]="linhaSelecionavel"
+          [globalFilterFields]="globalFilterFields()"
+          [resizableColumns]="true"
+          [columns]="selectedColumns"
+          [reorderableColumns]="true"
+          columnResizeMode="fit"
+          [loading]="carregando"
+          [lazy]="false"
+          (onLazyLoad)="lazyLoad($event)"
+          [scrollable]="true"
+          scrollHeight="470px"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex justify-content-between align-items-center">
+              <div
+                class="d-flex justify-content-between align-items-center w-100"
+              >
+                <span class="p-input-icon-left globalSearch w-100"
+                  ><i class="pi pi-search p-input-icon-top"></i>
+                  <input
+                    id="globalFilter"
+                    [(ngModel)]="globalFilter"
+                    pInputText
+                    type="text"
+                    class="w-100"
+                    [placeholder]="'Pesquisar ' + recipiente"
+                    (input)="onInputChange(tabela, $event)"
+                  />
+                </span>
+                <button
+                  pButton
+                  title="Limpar pesquisa"
+                  class="p-button-rounded p-button-info p-button-text"
+                  icon="pi pi-filter-slash"
+                  (click)="atualizarTela(tabela)"
+                ></button>
+              </div>
+            </div>
+          </ng-template>
+
+          <ng-template pTemplate="header">
+            <tr>
+              <!-- <th>
+                <p-tableHeaderCheckbox
+                  inputId="checkBox"
+                ></p-tableHeaderCheckbox>
+              </th> -->
+              <th></th>
+              <th
+                *ngFor="let col of filtrarColunas()"
+                pResizableColumn
+                pReorderableColumn
+                [pSortableColumn]="col.dataMap"
+              >
+                <div
+                  *ngIf="col.header != 'Número' || !rascunho"
+                  class="top-header"
+                >
+                  {{ col.header }}
+                  <p-columnFilter
+                    [type]="col.type"
+                    [field]="col.dataMap"
+                    display="menu"
+                  ></p-columnFilter>
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </div>
+              </th>
+              <th
+                *ngIf="
+                  tabelaAtual !== '#arquivados' && tabelaAtual !== '#favoritos'
+                "
+              >
+                Opções
+              </th>
+            </tr>
+          </ng-template>
+
+          <ng-template
+            pTemplate="body"
+            let-item
+            let-columns="selectedColumns"
+            let-index="rowIndex"
+          >
+            <tr [pSelectableRow]="item" [pReorderableRow]="index">
+              <!-- <td>
+                <div
+                  class="btn-group d-flex justify-content-between align-items-center"
+                >
+                  <p-tableCheckbox
+                    [inputId]="'checkBox-' + item.id"
+                    [value]="item"
+                  ></p-tableCheckbox>
+                </div>
+              </td> -->
+              <td>
+                <label *ngIf="!rascunho" class="star-checkbox">
+                  <input
+                    type="checkbox"
+                    name="star"
+                    [checked]="item.favorito"
+                    (change)="verificarEstrela(item)"
+                    [disabled]="carregando"
+                  />
+                  <span class="star"></span>
+                </label>
+              </td>
+
+              <td *ngFor="let col of filtrarColunas()">
+                <div
+                  *ngIf="
+                    col.field === 'numeroProcesso';
+                    then blocoNumero;
+                    else blocoOutros
+                  "
+                ></div>
+
+                <ng-template #blocoNumero>
+                  <div class="number-with-icon">
+                    <div
+                      (click)="visualizarProcesso(item)"
+                      class="link-visualizar"
+                      [ngClass]="{
+                        'nao-lido':
+                          (tabelaAtual === '#recebidos' ||
+                            tabelaAtual === '#distribuidos-recebidos') &&
+                          item.tramitacao?.lido! === false
+                      }"
+                      [innerHTML]="
+                        item | getData : col.dataMap | bindField : col
+                      "
+                    ></div>
+                    <i
+                      *ngIf="
+                        item.tramitacao?.naoLidoSeteDias! === true &&
+                        (tabelaAtual === '#recebidos' ||
+                          tabelaAtual === '#distribuidos-recebidos')
+                      "
+                      class="pi pi-exclamation-circle text-red"
+                    ></i>
+                    <i
+                      *ngIf="
+                        item.processoPai !== null ||
+                        (item.processoPrincipal !== null &&
+                          item.processoPrincipal !== item.id)
+                      "
+                      class="fa-solid fa-paperclip fa-lg"
+                    ></i>
+                    <i
+                      *ngIf="
+                        item.processoPrincipal !== null &&
+                        item.processoPrincipal === item.id
+                      "
+                      class="fa-solid fa-paperclip fa-sm"
+                    ></i>
+                  </div>
+                </ng-template>
+
+                <ng-template #blocoOutros>
+                  <div
+                    [innerHTML]="item | getData : col.dataMap | bindField : col"
+                  ></div>
+                </ng-template>
+              </td>
+
+              <td
+                *ngIf="
+                  tabelaAtual !== '#arquivados' && tabelaAtual !== '#favoritos'
+                "
+              >
+                <div class="d-flex flex-nowrap">
+                  <button
+                    *ngIf="
+                      (tabelaAtual === '#recebidos' ||
+                        tabelaAtual === '#criados' ||
+                        tabelaAtual === '#distribuidos-recebidos') &&
+                      item.processoPai === null
+                    "
+                    type="button"
+                    class="btn text-primary m-1 top-btn"
+                    tooltipPosition="top"
+                    pTooltip="Tramitar"
+                    (click)="tramitar(item)"
+                  >
+                    <i class="fa-solid fa-paper-plane fa-lg"></i>
+                  </button>
+                  <button
+                    *ngIf="
+                      (tabelaAtual === '#recebidos' ||
+                        tabelaAtual === '#criados') &&
+                      item.processoPai === null
+                    "
+                    type="button"
+                    class="btn text-primary m-1 top-btn"
+                    tooltipPosition="top"
+                    pTooltip="Distribuir"
+                    (click)="distribuir(item)"
+                  >
+                    <i class="fa-solid fa-share-square fa-lg"></i>
+                  </button>
+                  <button
+                    *ngIf="
+                      tabelaAtual === '#recebidos' ||
+                      tabelaAtual === '#criados' ||
+                      tabelaAtual === '#distribuidos-recebidos'
+                    "
+                    type="button"
+                    class="btn text-primary m-1 top-btn"
+                    tooltipPosition="top"
+                    pTooltip="Adicionar Despacho"
+                    (click)="adicionarDespacho(item.id)"
+                  >
+                    <i class="fa-solid fa-file-circle-plus fa-lg"></i>
+                  </button>
+
+                  <button
+                    *ngIf="
+                      (tabelaAtual === '#recebidos' &&
+                        item.processoPrincipal === null) ||
+                      item.processoPrincipal === item.id
+                    "
+                    type="button"
+                    class="btn text-primary m-1 top-btn"
+                    tooltipPosition="top"
+                    pTooltip="Juntada por Anexação"
+                    (click)="chamarJuntada(item, 'Anexação')"
+                  >
+                    <i class="fa-solid fa-paperclip fa-lg"></i>
+                  </button>
+                  <!-- <button
+                    *ngIf="
+                      tabelaAtual === '#recebidos' && item.processoPai === null
+                    "
+                    type="button"
+                    class="btn text-primary m-1 top-btn"
+                    tooltipPosition="top"
+                    pTooltip="Juntada por Apensação"
+                    (click)="chamarJuntada(item, 'Apensação')"
+                  >
+                    <i class="fa-solid fa-link fa-lg"></i>
+                  </button> -->
+
+                  <button
+                    *ngIf="
+                      tabelaAtual === '#recebidos' && item.processoPai !== null
+                    "
+                    type="button"
+                    class="btn text-primary m-1 top-btn"
+                    tooltipPosition="top"
+                    pTooltip="Desjuntada"
+                    (click)="chamarDesjuntada(item.processoPai, item.id)"
+                  >
+                    <i class="fa-solid fa-unlink fa-lg"></i>
+                  </button>
+
+                  <button
+                    *ngIf="
+                      (tabelaAtual === '#recebidos' ||
+                        tabelaAtual === '#criados' ||
+                        tabelaAtual === '#distribuidos-recebidos') &&
+                      item.processoPai === null
+                    "
+                    type="button"
+                    class="btn text-primary m-1 top-btn"
+                    tooltipPosition="top"
+                    pTooltip="Arquivar"
+                    (click)="arquivar(item)"
+                  >
+                    <i class="fa-solid fa-archive fa-lg"></i>
+                  </button>
+                  <button
+                    *ngIf="tabelaAtual === '#instituicoes-externas'"
+                    type="button"
+                    class="btn text-primary m-1 top-btn"
+                    tooltipPosition="left"
+                    pTooltip="Retornar ao Setor"
+                    (click)="retornarSetorOrigem(item.id)"
+                  >
+                    <i class="fa-solid fa-reply fa-lg"></i>
+                  </button>
+                  <button
+                    *ngIf="tabelaAtual === '#distribuidos-recebidos'"
+                    type="button"
+                    class="btn text-primary m-1 top-btn"
+                    tooltipPosition="top"
+                    pTooltip="Retornar Distribuição"
+                    (click)="retornarDistribuicao(item)"
+                  >
+                    <i class="fa-solid fa-reply fa-lg"></i>
+                  </button>
+                  <button
+                    *ngIf="rascunho"
+                    type="button"
+                    class="btn text-primary m-1 top-btn"
+                    tooltipPosition="top"
+                    pTooltip="Editar"
+                    (click)="editar(item)"
+                  >
+                    <i class="fa-solid fa-edit fa-lg"></i>
+                  </button>
+                  <button
+                    *ngIf="rascunho"
+                    type="button"
+                    class="btn text-primary m-1 top-btn"
+                    tooltipPosition="top"
+                    pTooltip="Excluir"
+                    (click)="excluirRascunho(item.id)"
+                  >
+                    <i class="fa-solid fa-trash fa-lg"></i>
+                  </button>
+                </div>
+                <!-- <div id="processoOpcoes" *ngIf="!rascunho">
+                  <p-splitButton
+                    *ngIf="opcoesVisivel()"
+                    #split1
+                    label="Opções"
+                    appendTo="body"
+                    (onClick)="split1.onDropdownButtonClick($event)"
+                    (onDropdownClick)="selecionarItem(item)"
+                    [model]="getOpcoesPorTabela()"
+                  >
+                  </p-splitButton>
+                </div>
+                <div class="d-flex flex-row" *ngIf="rascunho">
+                  <top-bto
+                    tipo="editar"
+                    class="mx-1"
+                    (click)="editar(item)"
+                  ></top-bto>
+                  <top-bto
+                    tipo="excluir"
+                    class="mx-1"
+                    (click)="excluirRascunho(item.id)"
+                  ></top-bto>
+                </div> -->
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td></td>
+              <td [attr.colspan]="numCols">
+                <span>Nenhum registro foi encontrado</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </section>
+</main>

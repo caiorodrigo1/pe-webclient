@@ -1,0 +1,195 @@
+<top-cabecalho
+  [itens]="[recipiente, acao]"
+  [recipiente]="acao + ' ' + recipiente"
+  [entidade]="recipiente"
+></top-cabecalho>
+
+<!-- <p-confirmDialog
+  position="top"
+  [style]="{ width: '500px' }"
+  rejectButtonStyleClass="p-button-outlined"
+></p-confirmDialog> -->
+<!-- <p-toast></p-toast> -->
+
+<main class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header bg-primary p-1"></div>
+
+      <div class="card-body" *ngIf="!carregando">
+        <form
+          name="editForm"
+          class="formulario"
+          role="form"
+          novalidate
+          (ngSubmit)="salvar()"
+          [formGroup]="editForm"
+        >
+          <section class="row">
+            <div class="col-md-12">
+              <label for="campo_nome" class="label-campo">
+                <strong>Nome:</strong> <span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <input
+                  pInputText
+                  id="campo_nome"
+                  name="nome"
+                  formControlName="nome"
+                  type="text"
+                  maxlength="50"
+                  class="p-inputtext-sm"
+                  [class.ng-invalid]="editForm.get('nome')!.invalid"
+                  [class.ng-dirty]="editForm.get('nome')!.touched"
+                />
+                <i
+                  *ngIf="
+                    editForm.get('nome')!.invalid &&
+                    editForm.get('nome')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['required'] && editForm.get('nome')!.touched"
+                class="p-error block"
+                >Este campo é obrigatório</small
+              >
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['minlength'] && editForm.get('nome')!.touched"
+                class="p-error block"
+                >Este campo deve ter pelo menos 2 caracteres</small
+              >
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['maxlength']"
+                class="p-error block"
+                >Este campo não pode ter mais de 50 caracteres.</small
+              >
+            </div>
+          </section>
+
+          <section class="row">
+            <div class="col-md-12 d-flex flex-column">
+              <label for="campo_assunto" class="label-campo">
+                <strong>Assunto do Processo:</strong
+                ><span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right">
+                <p-dropdown
+                  inputId="campo_assunto"
+                  name="assunto"
+                  formControlName="assunto"
+                  [options]="assuntosProcesso"
+                  placeholder="Selecione o assunto de processo"
+                  [filter]="true"
+                  filterBy="nome"
+                  filterPlaceholder="Procurar assunto de Processo"
+                  emptyFilterMessage="Nenhum resultado encontrado"
+                  dataKey="id"
+                  [class.ng-invalid]="editForm.get('assunto')!.invalid"
+                  [class.ng-dirty]="editForm.get('assunto')!.touched"
+                >
+                  <ng-template let-item pTemplate="selectedItem">
+                    {{ item.nome }}
+                  </ng-template>
+                  <ng-template let-item pTemplate="item">
+                    {{ item.nome }}
+                  </ng-template>
+                </p-dropdown>
+                <i
+                  *ngIf="editForm.get('assunto')!.errors?.['required'] && editForm.get('assunto')!.touched"
+                  id="filtroIcone"
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('assunto')!.errors?.['required'] && editForm.get('assunto')!.touched"
+                class="p-error block"
+                >Definir o assunto de Processo é obrigatório</small
+              >
+            </div>
+          </section>
+        </form>
+
+        <div class="text-end mt-4">
+          <button
+            id="bto-salvar"
+            type="button"
+            (click)="addEtapa()"
+            class="btn btn-primary me-2"
+          >
+            <i class="fa fa-plus fa-lg me-2"></i>
+            Adicionar Etapa
+          </button>
+        </div>
+
+        <label class="label-campo">
+          <strong>Etapas do Fluxo:</strong>
+        </label>
+
+        <div class="card my-2 p-2" *ngIf="etapasFluxo.length <= 0">
+          Nenhuma Etapa foi incluída
+        </div>
+
+        <div id="entidades">
+          <p-table
+            *ngIf="etapasFluxo.length > 0"
+            [value]="etapasFluxo"
+            [scrollable]="true"
+            scrollHeight="400px"
+            emptymessage="Nenhuma Etapa foi incluída"
+            styleClass="p-datatable-striped"
+            responsiveLayout="stack"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Nome</th>
+                <th style="width: 5%"></th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-item>
+              <tr>
+                <td>{{ item.nome }}</td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn text-primary m-0 top-btn"
+                    tooltipPosition="top"
+                    pTooltip="Excluir Etapa"
+                    (click)="excluirEtapa(item)"
+                    [disabled]="apagando"
+                  >
+                    <i class="fa-solid fa-trash fa-lg"></i>
+                  </button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
+      <div class="card-footer bg-white text-end">
+        <button
+          id="bto-voltar"
+          type="button"
+          class="btn btn-white fa-lg me-2"
+          (click)="cancelar()"
+        >
+          <i class="fa fa-arrow-left fa-lg me-2"></i>
+          Voltar
+        </button>
+        <button
+          id="bto-salvar"
+          type="submit"
+          (click)="salvar()"
+          class="btn btn-primary me-2"
+          [disabled]="editForm.invalid || salvando"
+        >
+          <i class="fa fa-save fa-lg me-2"></i>
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

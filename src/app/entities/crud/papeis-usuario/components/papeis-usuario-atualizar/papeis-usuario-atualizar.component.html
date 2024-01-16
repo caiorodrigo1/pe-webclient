@@ -1,0 +1,181 @@
+<top-cabecalho
+  [itens]="[recipiente, acao]"
+  [recipiente]="acao + ' ' + recipiente"
+  [entidade]="recipiente"
+></top-cabecalho>
+
+<main class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header bg-primary p-1"></div>
+
+      <div class="card-body" *ngIf="!carregando">
+        <form
+          class="formulario"
+          name="editForm"
+          role="form"
+          novalidate
+          (ngSubmit)="salvar()"
+          [formGroup]="editForm"
+        >
+          <section class="row">
+            <div class="col-md-12">
+              <label for="campo_nome" class="label-campo">
+                <strong>Nome:</strong> <span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <input
+                  pInputText
+                  id="campo_nome"
+                  name="nome"
+                  formControlName="nome"
+                  type="text"
+                  maxlength="50"
+                  class="p-inputtext-sm"
+                  [class.ng-invalid]="editForm.get('nome')!.invalid"
+                  [class.ng-dirty]="editForm.get('nome')!.touched"
+                />
+                <i
+                  *ngIf="
+                    editForm.get('nome')!.invalid &&
+                    editForm.get('nome')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['required'] && editForm.get('nome')!.touched"
+                class="p-error block"
+                >Este campo é é obrigatório
+              </small>
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['minlength'] && editForm.get('nome')!.touched"
+                class="p-error block"
+                >Este campo deve ter pelo menos 2 caracteres
+              </small>
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['maxlength']"
+                class="p-error block"
+                >Este campo não pode ter mais de 50 caracteres.
+              </small>
+            </div>
+          </section>
+
+          <section class="row">
+            <div class="col-md-12">
+              <label class="form-check-label label-campo">
+                <strong>Papeis: </strong>
+              </label>
+
+              <!-- <div class="field-checkbox my-2">
+            <p-checkbox
+              formControlName="coordenadorSetor"
+              [binary]="true"
+              inputId="coordenadorSetor"
+            ></p-checkbox>
+            <label class="mx-1" for="coordenadorSetor"
+              >É coordenador do Setor</label
+            >
+          </div> -->
+
+              <div class="field-checkbox my-2">
+                <p-checkbox
+                  formControlName="criaProcesso"
+                  [binary]="true"
+                  inputId="criaProcesso"
+                ></p-checkbox>
+                <label class="mx-1" for="criaProcesso">Cria Processo</label>
+              </div>
+
+              <div class="field-checkbox my-2">
+                <p-checkbox
+                  formControlName="alteraProcesso"
+                  [binary]="true"
+                  inputId="alteraProcesso"
+                ></p-checkbox>
+                <label class="mx-1" for="alteraProcesso">Altera Processo</label>
+              </div>
+
+              <div class="field-checkbox my-2">
+                <p-checkbox
+                  formControlName="arquivaProcesso"
+                  [binary]="true"
+                  inputId="arquivaProcesso"
+                ></p-checkbox>
+                <label class="mx-1" for="arquivaProcesso"
+                  >Arquiva Processo</label
+                >
+              </div>
+
+              <div class="field-checkbox my-2">
+                <p-checkbox
+                  formControlName="tramitaProcesso"
+                  [binary]="true"
+                  inputId="tramitaProcesso"
+                ></p-checkbox>
+                <label class="mx-1" for="tramitaProcesso"
+                  >Tramita Processo</label
+                >
+              </div>
+
+              <div class="field-checkbox my-2">
+                <p-checkbox
+                  formControlName="visualizaTramitacao"
+                  [binary]="true"
+                  inputId="visualizaTramitacao"
+                ></p-checkbox>
+                <label class="mx-1" for="visualizaTramitacao"
+                  >Visualiza Tramitações</label
+                >
+              </div>
+
+              <div class="field-checkbox my-2">
+                <p-checkbox
+                  formControlName="visualizaSigiloso"
+                  [binary]="true"
+                  inputId="visualizaSigiloso"
+                ></p-checkbox>
+                <label class="mx-1" for="visualizaSigiloso"
+                  >Visualiza Sigiloso</label
+                >
+              </div>
+
+              <div class="field-checkbox my-2">
+                <p-checkbox
+                  formControlName="visualizaRestrito"
+                  [binary]="true"
+                  inputId="visualizaRestrito"
+                ></p-checkbox>
+                <label class="mx-1" for="visualizaRestrito"
+                  >Visualiza Restrito</label
+                >
+              </div>
+            </div>
+          </section>
+        </form>
+      </div>
+
+      <div class="card-footer bg-white text-end">
+        <button
+          id="bto-voltar"
+          type="button"
+          class="btn btn-white fa-lg me-2"
+          (click)="cancelar()"
+        >
+          <i class="fa fa-arrow-left fa-lg me-2"></i>
+          Voltar
+        </button>
+        <button
+          id="bto-salvar"
+          type="submit"
+          (click)="salvar()"
+          class="btn btn-primary me-2"
+          [disabled]="editForm.invalid || salvando"
+        >
+          <i class="fa fa-save fa-lg me-2"></i>
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

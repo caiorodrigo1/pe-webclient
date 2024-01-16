@@ -1,0 +1,189 @@
+<main class="m-4">
+  <div class="d-flex flex-column align-items-center">
+    <h2 class="m-3">Consultar Peticionamento</h2>
+    <!-- 0629202301515321 -->
+
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="card" style="max-width: 500px">
+          <div class="card-header bg-primary p-1"></div>
+
+          <div class="card-body">
+            <form class="formulario" name="editform" role="form" novalidate>
+              <section class="row">
+                <div class="col-md-12">
+                  <label for="campo_cliente" class="label-campo"
+                    ><strong>Cliente:</strong
+                    ><span class="text-danger">*</span></label
+                  >
+                  <div class="p-input-icon-right w-100">
+                    <p-dropdown
+                      inputId="campo_cliente"
+                      name="cliente"
+                      [options]="listaClientes"
+                      placeholder="Selecione o Cliente"
+                      [filter]="true"
+                      filterBy="nome"
+                      filterPlaceholder="Procurar Cliente"
+                      emptyFilterMessage="Nenhum resultado encontrado"
+                      dataKey="id"
+                      [(ngModel)]="consulta.cliente"
+                      (ngModelChange)="onChangeCliente($event)"
+                    >
+                      <ng-template let-item pTemplate="selectedItem">
+                        {{ item.nome }}
+                      </ng-template>
+                      <ng-template let-item pTemplate="item">
+                        {{ item.nome }}
+                      </ng-template>
+                    </p-dropdown>
+                  </div>
+                </div>
+              </section>
+              <section class="row">
+                <div class="col-md-12">
+                  <label for="campo_orgao" class="label-campo"
+                    ><strong>Orgão:</strong
+                    ><span class="text-danger">*</span></label
+                  >
+                  <div class="p-input-icon-right w-100">
+                    <p-dropdown
+                      inputId="campo_orgao"
+                      name="orgao"
+                      [options]="listaOrgaos"
+                      placeholder="Selecione o Orgão"
+                      [filter]="true"
+                      filterBy="nome"
+                      filterPlaceholder="Procurar orgão"
+                      emptyFilterMessage="Nenhum resultado encontrado"
+                      dataKey="id"
+                      [(ngModel)]="consulta.orgao"
+                      [disabled]="!clienteSelecionado"
+                    >
+                      <ng-template let-item pTemplate="selectedItem">
+                        {{ item.sigla }}
+                      </ng-template>
+                      <ng-template let-item pTemplate="item">
+                        {{ item.sigla }}
+                      </ng-template>
+                    </p-dropdown>
+                  </div>
+                </div>
+              </section>
+
+              <section class="row">
+                <div class="col-md-12">
+                  <label for="numeroProtocolo" class="label-campo">
+                    <strong>Número do Protocolo:</strong>
+                    <span class="text-danger">*</span></label
+                  >
+                  <div class="p-input-icon-right w-100">
+                    <input
+                      pInputText
+                      id="numeroProtocolo"
+                      name="numeroProtocolo"
+                      [(ngModel)]="consulta.protocolo"
+                      type="text"
+                      maxlength="50"
+                      class="p-inputtext-sm"
+                    />
+                  </div>
+                </div>
+              </section>
+            </form>
+          </div>
+
+          <div class="card-footer bg-white text-end">
+            <button
+              id="bto-voltar"
+              type="button"
+              class="btn btn-white fa-lg me-2"
+              routerLink="/login"
+            >
+              <i class="fa fa-arrow-left fa-lg me-2"></i>
+              Voltar
+            </button>
+            <button
+              id="bto-pesquisar"
+              type="submit"
+              (click)="pesquisar()"
+              class="btn btn-primary me-2"
+              [disabled]="carregando"
+            >
+              <i class="fa fa-search fa-lg me-2"></i>
+              Pesquisar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="carregando" class="d-flex justify-content-center my-4">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+
+    <div class="row mt-4" *ngIf="exibir">
+      <div class="col-xl-12">
+        <div class="card" style="max-width: 500px">
+          <div class="card-header bg-primary p-1"></div>
+
+          <div class="d-flex justify-content-center mt-2">
+            <h3 style="color: #959a9d">Peticionamento encontrado</h3>
+          </div>
+
+          <div class="card-body">
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <td colspan="12">
+                    <strong>Número do Protocolo:</strong>
+                    {{ resposta.protocolo }}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td colspan="12">
+                    <strong>Orgão:</strong>
+                    {{ resposta.orgao!.sigla }}
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="12">
+                    <strong>Nome Completo:</strong>
+                    {{ resposta.solicitante }}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td colspan="12">
+                    <strong>Documento:</strong>
+                    {{ resposta.documento | cpf_cnpj }}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td colspan="12">
+                    <strong>E-mail:</strong>
+                    {{ resposta.email }}
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="12">
+                    <strong>Resposta:</strong>
+                    {{ resposta.resposta }}
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="12">
+                    <strong>Solicitação:</strong>
+                    {{ resposta.solicitacao }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

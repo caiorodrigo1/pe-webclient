@@ -1,0 +1,51 @@
+.star-checkbox {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.star-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.star-checkbox .star {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background-image: url("/assets/img/logo/estrelaVazia.png");
+  background-size: 100%;
+}
+
+.star-checkbox input[type="checkbox"]:checked + .star {
+  background-image: url("/assets/img/logo/estrelaCheia.png");
+}
+
+.link-visualizar {
+  cursor: pointer;
+  color: #0000ff;
+}
+
+.link-visualizar:hover {
+  color: purple;
+}
+
+.number-with-icon {
+  display: flex;
+  align-items: center;
+}
+
+.number-with-icon i {
+  margin-left: 5px;
+}
+
+.nao-lido {
+  font-weight: bold;
+}
+
+.top-btn:hover {
+  border: solid #048abf 1px;
+}

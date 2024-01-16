@@ -1,0 +1,93 @@
+$highlight: #03688f;
+$primary: #048abf;
+$fontePadrao: 12px;
+
+//achar isso no theme.css
+.p-datepicker-trigger {
+  .p-button-icon {
+    color: #ffffff;
+  }
+  background-color: $primary;
+}
+
+.p-confirm-dialog-accept,
+.p-confirm-dialog-reject {
+  color: #ffffff;
+  background: $primary;
+  border-color: $primary !important;
+}
+
+.p-button-outlined {
+  span {
+    color: $primary;
+  }
+
+  .p-icon {
+    color: $primary;
+  }
+}
+
+.p-selectbutton {
+  .p-button {
+    height: 35px;
+    span {
+      font-size: 12px;
+    }
+  }
+}
+
+// .p-button {
+//   background: $primary;
+//   border-color: $primary;
+// }
+
+//---
+.p-inputswitch.p-inputswitch-checked:not(.p-disabled) .p-inputswitch-slider {
+  background: $primary;
+}
+
+.p-inputswitch.p-inputswitch-checked:not(.p-disabled):hover
+  .p-inputswitch-slider {
+  background: $highlight;
+}
+
+.p-selectbutton .p-button.p-highlight {
+  background: $primary;
+  border-color: $primary;
+}
+
+.p-selectbutton .p-button.p-highlight:hover {
+  background: $highlight;
+  border-color: $highlight;
+}
+
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-highlight {
+  border-color: $primary;
+  background: $primary;
+}
+
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-highlight:hover {
+  border-color: $highlight;
+  background: $highlight;
+}
+
+.p-input-filled
+  .p-checkbox:not(.p-checkbox-disabled)
+  .p-checkbox-box.p-highlight:hover {
+  background: $highlight;
+}
+
+.p-button:enabled:hover {
+  background: $highlight;
+  border-color: $highlight;
+}
+
+.p-accordion-header-link {
+  padding: 8px !important;
+  border-radius: 0 !important;
+}
+
+.p-accordion-header,
+.p-accordion-content {
+  font-size: $fontePadrao;
+}

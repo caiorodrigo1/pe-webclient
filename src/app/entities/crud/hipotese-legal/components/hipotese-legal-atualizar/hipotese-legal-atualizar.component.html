@@ -1,0 +1,108 @@
+<top-cabecalho
+  *ngIf="!isModal"
+  [itens]="[recipiente, acao]"
+  [recipiente]="acao + ' ' + recipiente"
+  [entidade]="recipiente"
+></top-cabecalho>
+<div *ngIf="isModal" class="m-3"></div>
+
+<main class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header bg-primary p-1"></div>
+
+      <div class="card-body" *ngIf="!carregando">
+        <form
+          class="formulario"
+          name="editForm"
+          role="form"
+          novalidate
+          (ngSubmit)="salvar()"
+          [formGroup]="editForm"
+        >
+          <section class="row">
+            <div class="col-md-12">
+              <label for="campo_descricao" class="label-campo">
+                <strong>Descrição:</strong>
+                <span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <input
+                  pInputText
+                  id="campo_descricao"
+                  name="descricao"
+                  formControlName="descricao"
+                  type="text"
+                  maxlength="50"
+                  class="p-inputtext-sm"
+                  [class.ng-invalid]="editForm.get('descricao')!.invalid"
+                  [class.ng-dirty]="editForm.get('descricao')!.touched"
+                />
+                <i
+                  *ngIf="
+                    editForm.get('descricao')!.invalid &&
+                    editForm.get('descricao')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('descricao')!.errors?.['required'] && editForm.get('descricao')!.touched"
+                class="p-error block"
+                >Este campo é obrigatório</small
+              >
+              <small
+                *ngIf="editForm.get('descricao')!.errors?.['minlength'] && editForm.get('descricao')!.touched"
+                class="p-error block"
+                >Este campo deve ter pelo menos 2 caracteres</small
+              >
+              <small
+                *ngIf="editForm.get('descricao')!.errors?.['maxlength']"
+                class="p-error block"
+                >Este campo não pode ter mais de 50 caracteres.</small
+              >
+            </div>
+          </section>
+
+          <section class="row">
+            <div class="col-md-1">
+              <label for="campo_ativo" class="form-check-label label-campo">
+                <strong>Ativo:</strong>
+              </label>
+              <div>
+                <p-inputSwitch
+                  inputId="campo_ativo"
+                  name="ativo"
+                  formControlName="ativo"
+                ></p-inputSwitch>
+              </div>
+            </div>
+          </section>
+        </form>
+      </div>
+
+      <div class="card-footer bg-white text-end">
+        <button
+          *ngIf="!isModal"
+          id="bto-voltar"
+          type="button"
+          class="btn btn-white fa-lg me-2"
+          (click)="cancelar()"
+        >
+          <i class="fa fa-arrow-left fa-lg me-2"></i>
+          Voltar
+        </button>
+        <button
+          id="bto-salvar"
+          type="submit"
+          (click)="salvar()"
+          class="btn btn-primary me-2"
+          [disabled]="editForm.invalid || salvando"
+        >
+          <i class="fa fa-save fa-lg me-2"></i>
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

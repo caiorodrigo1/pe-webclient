@@ -1,0 +1,29 @@
+<main class="formulario modal-body mt-3">
+  <section class="row">
+    <label style="font-size: 12px" for="campo_motivo" class="label-motivo"
+      ><strong>Motivo:</strong></label
+    >
+    <div class="p-float-label p-input-icon-right col-md-12">
+      <textarea
+        pInputTextarea
+        id="campo_motivo"
+        name="motivo"
+        [(ngModel)]="motivo"
+        [autoResize]="true"
+        maxlength="300"
+      ></textarea>
+    </div>
+  </section>
+
+  <hr />
+
+  <footer class="d-flex justify-content-end">
+    <button
+      class="btn btn-primary"
+      (click)="arquivar()"
+      [disabled]="arquivando || motivo == ''"
+    >
+      Arquivar
+    </button>
+  </footer>
+</main>

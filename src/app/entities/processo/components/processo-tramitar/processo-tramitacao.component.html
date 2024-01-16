@@ -1,0 +1,163 @@
+<main class="formulario modal-body mt-3">
+  <p-accordion (onOpen)="onTabOpen($event)" (onClose)="onTabClose()">
+    <p-accordionTab
+      header="Enviar para outro {{ header_obj }}"
+      *ngIf="!multSetor"
+    >
+      <div class="">
+        <p>Órgão Origem: {{ usuarioLogado.orgao!.sigla }}</p>
+        <p>Setor Origem: {{ usuarioLogado.setor!.sigla }}</p>
+      </div>
+
+      <div class="p-float-label" style="margin-top: 35px">
+        <p-dropdown
+          [options]="orgaos"
+          [(ngModel)]="orgao"
+          optionLabel="sigla"
+          placeholder="Selecione o Órgão Destino"
+          inputId="campo_orgao"
+          [filter]="true"
+          filterBy="sigla"
+          filterPlaceholder="Procurar Órgão"
+          emptyFilterMessage="Nenhum resultado encontrado"
+          dataKey="id"
+          (ngModelChange)="onChangeOrgao($event)"
+        ></p-dropdown>
+        <label for="campo_orgao">Órgão Destino</label>
+      </div>
+
+      <div class="p-float-label" style="margin-top: 30px">
+        <p-dropdown
+          [options]="setores"
+          [(ngModel)]="setor"
+          optionLabel="sigla"
+          placeholder="Selecione o Setor Destino"
+          inputId="campo_setor"
+          [filter]="true"
+          filterBy="sigla"
+          filterPlaceholder="Procurar setor"
+          emptyFilterMessage="Nenhum resultado encontrado"
+          dataKey="id"
+          (ngModelChange)="onChangeSetor($event)"
+          [disabled]="orgaoIndefinido"
+        ></p-dropdown>
+        <label for="campo_setor">Setor Destino</label>
+      </div>
+
+      <div
+        class="p-float-label"
+        style="margin-top: 30px"
+        *ngIf="acessoSigiloso"
+      >
+        <p-dropdown
+          [options]="usuarios"
+          [(ngModel)]="usuario"
+          optionLabel="nome"
+          placeholder="Selecione o Usuário Destino"
+          inputId="campo_usuario"
+          [filter]="true"
+          filterBy="nome"
+          filterPlaceholder="Procurar Usuário"
+          emptyFilterMessage="Nenhum resultado encontrado"
+          dataKey="id"
+          [disabled]="setorIndefinido"
+        ></p-dropdown>
+        <label for="campo_usuario">Usuário Destino</label>
+      </div>
+    </p-accordionTab>
+
+    <p-accordionTab
+      header="Enviar para outros Setores"
+      *ngIf="!acessoSigiloso && multSetor"
+    >
+      <div class="">
+        <p>Órgão Origem: {{ usuarioLogado.orgao!.sigla }}</p>
+        <p>Setor Origem: {{ usuarioLogado.setor!.sigla }}</p>
+      </div>
+
+      <div class="p-float-label" style="margin-top: 35px">
+        <p-dropdown
+          [options]="orgaos"
+          [(ngModel)]="orgao"
+          optionLabel="sigla"
+          placeholder="Selecione o Órgão Destino"
+          inputId="campo_orgao"
+          [filter]="true"
+          filterBy="sigla"
+          filterPlaceholder="Procurar Órgão"
+          emptyFilterMessage="Nenhum resultado encontrado"
+          dataKey="id"
+          (ngModelChange)="onChangeOrgao($event)"
+        ></p-dropdown>
+        <label for="campo_orgao">Órgão Destino</label>
+      </div>
+
+      <div class="p-float-label" style="margin-top: 30px">
+        <p-multiSelect
+          [options]="setores"
+          [(ngModel)]="setoresAdicionados"
+          optionLabel="sigla"
+          placeholder="Selecione o Setor Destino"
+          inputId="campo_setor"
+          [filter]="true"
+          filterBy="sigla"
+          filterPlaceholder="Procurar setor"
+          emptyFilterMessage="Nenhum resultado encontrado"
+          dataKey="id"
+          [disabled]="orgaoIndefinido"
+        ></p-multiSelect>
+        <label for="campo_setor" style="font-size: 12px">Setores Destino</label>
+      </div>
+    </p-accordionTab>
+
+    <p-accordionTab header="Enviar para Instituição Externa">
+      <section class="row">
+        <div class="col-md-11">
+          <span class="p-float-label" style="margin-top: 20px">
+            <p-dropdown
+              [options]="instituicoesExternas"
+              [(ngModel)]="instituicaoExterna"
+              optionLabel="nome"
+              placeholder="Selecione a Instituição"
+              inputId="campo_instituicao"
+              [filter]="true"
+              filterBy="nome"
+              filterPlaceholder="Procurar Instituicao Externa"
+              emptyFilterMessage="Nenhum resultado encontrado"
+              dataKey="id"
+            ></p-dropdown>
+            <label for="campo_instituicao">Selecione a Instituição</label>
+          </span>
+        </div>
+        <div class="col-md-1" style="padding: 0; align-self: flex-end">
+          <button
+            (click)="adicionarInstituicao()"
+            class="btn btn-primary"
+            pTooltip="Criar Instituição Externa"
+            tooltipPosition="top"
+            style="
+              border-radius: 20px;
+              padding: 10px;
+              display: flex;
+              border: none;
+            "
+          >
+            <i class="pi pi-plus"></i>
+          </button>
+        </div>
+      </section>
+    </p-accordionTab>
+  </p-accordion>
+
+  <hr />
+
+  <footer class="d-flex justify-content-end">
+    <button
+      class="btn btn-primary"
+      (click)="tramitar()"
+      [disabled]="semTramitacao || tramitando"
+    >
+      Tramitar
+    </button>
+  </footer>
+</main>

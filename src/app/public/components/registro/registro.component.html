@@ -1,0 +1,229 @@
+<!-- <p-toast position="top-right" key="registro-form"></p-toast>
+<div class="register register-with-news-feed">
+  <div class="news-feed">
+    <div
+      class="news-image"
+      style="background-image: url(/assets/img/login-bg/login-bg-15.jpg)"
+    ></div>
+    <div class="news-caption">
+      <h4 class="caption-title"><b>Top</b>Solutions</h4>
+      <p>
+        As a Color Admin app administrator, you use the Color Admin console to
+        manage your organization’s account, such as add new users, manage
+        security settings, and turn on the services you want your team to
+        access.
+      </p>
+    </div>
+  </div>
+
+  <div class="register-container">
+    <div class="register-header mb-25px h1">
+      <div class="mb-1">Solicitação de Acesso</div>
+      <small class="d-block fs-15px lh-16"
+        >Ao submeter este formulário de cadastro, ele será analisado pelos
+        administradores do sistema para aprovação.</small
+      >
+    </div>
+
+    <div class="register-content">
+      <form
+        class="form"
+        role="form"
+        (ngSubmit)="salvar()"
+        [formGroup]="editForm"
+        class="fs-13px"
+      >
+        <div class="mb-3">
+          <label class="mb-2">Nome <span class="text-danger">*</span></label>
+          <div class="row gx-3">
+            <div class="col-md-6 mb-2 mb-md-0">
+              <input
+                type="text"
+                id="field_nome"
+                name="nome"
+                maxlength="50"
+                formControlName="nome"
+                class="form-control fs-13px"
+                placeholder="Nome"
+                [class.is-invalid]="(editForm.get('nome')!.errors?.['required'] || editForm.get('nome')!.errors?.['minlength']) && editForm.get('nome')!.touched"
+                autocomplete="off"
+              />
+              <span
+                *ngIf="editForm.get('nome')!.errors?.['required']"
+                class="invalid-feedback"
+              >
+                O campo Nome é obrigatório</span
+              >
+              <span
+                *ngIf="editForm.get('nome')!.errors?.['minlength']"
+                class="invalid-feedback"
+              >
+                O Nome precisa ter no mínimo 2 caractere</span
+              >
+            </div>
+            <div class="col-md-6">
+              <input
+                type="text"
+                id="field_sobrenome"
+                name="sobrenome"
+                maxlength="48"
+                formControlName="sobrenome"
+                class="form-control fs-13px"
+                placeholder="Sobrenome"
+                [class.is-invalid]="(editForm.get('sobrenome')!.errors?.['required'] || editForm.get('sobrenome')!.errors?.['minlength']) && editForm.get('sobrenome')!.touched"
+                autocomplete="off"
+              />
+              <span
+                *ngIf="editForm.get('sobrenome')!.errors?.['required']"
+                class="invalid-feedback"
+              >
+                O campo Sobrenome é obrigatório</span
+              >
+              <span
+                *ngIf="editForm.get('sobrenome')!.errors?.['minlength']"
+                class="invalid-feedback"
+              >
+                O Sobrenome precisa ter no mínimo 2 caractere</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="mb-2">CPF <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            id="field_cpf"
+            name="cpf"
+            formControlName="cpf"
+            class="form-control fs-13px"
+            placeholder="CPF"
+            [class.is-invalid]="(editForm.get('cpf')!.errors?.['required'] || editForm.get('cpf')!.errors?.['pattern']) && editForm.get('cpf')!.touched"
+            autocomplete="off"
+          />
+          <span
+            *ngIf="editForm.get('cpf')!.errors?.['required']"
+            class="invalid-feedback"
+          >
+            O campo CPF é obrigatório</span
+          >
+          <span
+            *ngIf="editForm.get('cpf')!.errors?.['pattern']"
+            class="invalid-feedback"
+          >
+            Campo CPF é inválido (Exemplo: 11122233344)</span
+          >
+        </div>
+        <div class="mb-3">
+          <label class="mb-2">E-mail <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            id="field_email"
+            name="email"
+            formControlName="email"
+            class="form-control fs-13px"
+            placeholder="Endereço de e-mail"
+            [class.is-invalid]="(editForm.get('email')!.errors?.['required'] || editForm.get('email')!.errors?.['pattern']) && editForm.get('email')!.touched"
+            autocomplete="off"
+          />
+          <span
+            *ngIf="editForm.get('email')!.errors?.['required']"
+            class="invalid-feedback"
+          >
+            O campo E-mail é obrigatório</span
+          >
+          <span
+            *ngIf="editForm.get('email')!.errors?.['pattern']"
+            class="invalid-feedback"
+          >
+            E-mail inválido (Exemplo: usuario@mail.com.br)</span
+          >
+        </div>
+        <div class="mb-3">
+          <label class="mb-2"
+            >Confirmar E-mail <span class="text-danger">*</span></label
+          >
+          <input
+            type="text"
+            id="field_emailConfirmar"
+            name="emailConfirmar"
+            formControlName="emailConfirmar"
+            class="form-control fs-13px"
+            placeholder="Confirmar endereço de e-mail"
+            [class.is-invalid]="(editForm.get('emailConfirmar')!.errors?.['required'] || editForm.get('emailConfirmar')!.errors?.['pattern']) && editForm.get('emailConfirmar')!.touched"
+            autocomplete="off"
+          />
+          <span
+            *ngIf="editForm.get('emailConfirmar')!.errors?.['required']"
+            class="invalid-feedback"
+          >
+            O campo Confirmar E-mail é obrigatório</span
+          >
+          <span
+            *ngIf="editForm.get('emailConfirmar')!.errors?.['pattern']"
+            class="invalid-feedback"
+          >
+            E-mail inválido (Exemplo: usuario@mail.com.br)</span
+          >
+        </div>
+        <div class="mb-4">
+          <label class="mb-2">Senha <span class="text-danger">*</span></label>
+          <input
+            type="password"
+            id="field_senha"
+            name="senha"
+            maxlength="200"
+            formControlName="senha"
+            class="form-control fs-13px"
+            placeholder="Senha"
+            [class.is-invalid]="(editForm.get('senha')!.errors?.['required'] || editForm.get('senha')!.errors?.['minlength']) && editForm.get('senha')!.touched"
+            autocomplete="off"
+          />
+          <span
+            *ngIf="editForm.get('senha')!.errors?.['required']"
+            class="invalid-feedback"
+          >
+            O campo Senha é obrigatório</span
+          >
+          <span
+            *ngIf="editForm.get('senha')!.errors?.['minlength']"
+            class="invalid-feedback"
+          >
+            A senha precisa ter no mínimo 6 caractere</span
+          >
+        </div>
+        <div class="form-check mb-4">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            value=""
+            id="agreementCheckbox"
+          />
+          <label class="form-check-label" for="agreementCheckbox">
+            By clicking Sign Up, you agree to our
+            <a href="javascript:;">Terms</a> and that you have read our
+            <a href="javascript:;">Data Policy</a>, including our
+            <a href="javascript:;">Cookie Use</a>.
+          </label>
+        </div>
+        <div class="mb-4">
+          <button
+            type="submit"
+            id="save-entity"
+            [disabled]="editForm.invalid || salvando"
+            class="btn btn-primary d-block w-100 btn-lg h-45px fs-13px"
+          >
+            Cadastrar
+          </button>
+        </div>
+        <div class="mb-4 pb-5">
+          Já está cadastrado? Clique <a routerLink="/login">aqui</a> para fazer
+          login.
+        </div>
+        <hr class="bg-gray-600 opacity-2" />
+        <p class="text-center text-gray-600">
+          &copy; Top Solutions Todos os direitos reservados 2022
+        </p>
+      </form>
+    </div>
+  </div>
+</div> -->

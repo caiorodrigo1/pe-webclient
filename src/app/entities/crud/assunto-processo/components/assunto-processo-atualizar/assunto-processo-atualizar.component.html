@@ -1,0 +1,173 @@
+<top-cabecalho
+  *ngIf="!isModal"
+  [itens]="[recipiente, acao]"
+  [recipiente]="acao + ' ' + recipiente"
+  [entidade]="recipiente"
+></top-cabecalho>
+<div *ngIf="isModal" class="m-3"></div>
+
+<main class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header bg-primary p-1"></div>
+
+      <div class="card-body" *ngIf="!carregando">
+        <form
+          name="editForm"
+          class="formulario"
+          role="form"
+          novalidate
+          (ngSubmit)="salvar()"
+          [formGroup]="editForm"
+        >
+          <section class="row">
+            <!-- <div class="col-md-3">
+          <label for="campo_codigo" class="label-campo"
+            ><strong>Código:</strong> <span class="text-danger">*</span></label
+          >
+          <div class="p-input-icon-right w-100">
+            <input
+              pInputText
+              id="campo_codigo"
+              name="codigo"
+              formControlName="codigo"
+              [class.ng-invalid]="editForm.get('codigo')!.invalid"
+              [class.ng-dirty]="editForm.get('codigo')!.touched"
+            />
+            <i
+              *ngIf="
+                editForm.get('codigo')!.invalid &&
+                editForm.get('codigo')!.touched
+              "
+              class="pi pi-exclamation-circle text-danger"
+            ></i>
+          </div>
+          <small
+            *ngIf="editForm.get('codigo')!.errors?.['required'] && editForm.get('codigo')!.touched"
+            class="p-error block"
+            >Este campo Código é obrigatório</small
+          >
+          <small
+            *ngIf="editForm.get('codigo')!.errors?.['minlength'] && editForm.get('codigo')!.touched"
+            class="p-error block"
+            >Este campo deve ter pelo menos 2 caracteres</small
+          >
+          <small
+            *ngIf="editForm.get('codigo')!.errors?.['maxlength']"
+            class="p-error block"
+            >Este campo não pode ter mais de 50 caracteres.</small
+          >
+        </div> -->
+
+            <div class="col-md-12">
+              <label for="campo_nome" class="label-campo"
+                ><strong>Nome:</strong>
+                <span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <input
+                  pInputText
+                  id="campo_nome"
+                  name="nome"
+                  formControlName="nome"
+                  type="text"
+                  maxlength="50"
+                  class="p-inputtext-sm"
+                  [class.ng-invalid]="editForm.get('nome')!.invalid"
+                  [class.ng-dirty]="editForm.get('nome')!.touched"
+                />
+                <i
+                  *ngIf="
+                    editForm.get('nome')!.invalid &&
+                    editForm.get('nome')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['required'] && editForm.get('nome')!.touched"
+                class="p-error block"
+                >Este campo é obrigatório</small
+              >
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['minlength'] && editForm.get('nome')!.touched"
+                class="p-error block"
+                >Este campo deve ter pelo menos 2 caracteres</small
+              >
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['maxlength']"
+                class="p-error block"
+                >Este campo não pode ter mais de 100 caracteres.</small
+              >
+            </div>
+          </section>
+
+          <section class="row">
+            <label for="campo_nomeCompleto" class="label-campo"
+              ><strong>Nome Completo:</strong>
+              <span class="text-danger">*</span></label
+            >
+            <div class="p-float-label p-input-icon-right col-md-12">
+              <textarea
+                pInputTextarea
+                id="campo_nomeCompleto"
+                name="nomeCompleto"
+                formControlName="nomeCompleto"
+                [autoResize]="true"
+                maxlength="200"
+                [class.ng-invalid]="editForm.get('nomeCompleto')!.invalid"
+                [class.ng-dirty]="editForm.get('nomeCompleto')!.touched"
+              ></textarea>
+              <i
+                id="areaTextoIcone"
+                *ngIf="
+                  editForm.get('nomeCompleto')!.invalid &&
+                  editForm.get('nomeCompleto')!.touched
+                "
+                class="pi pi-exclamation-circle text-danger"
+              ></i>
+            </div>
+            <small
+              *ngIf="editForm.get('nomeCompleto')!.errors?.['required'] && editForm.get('nomeCompleto')!.touched"
+              class="p-error block"
+              >Este campo é obrigatório</small
+            >
+            <small
+              *ngIf="editForm.get('nomeCompleto')!.errors?.['minlength'] && editForm.get('nomeCompleto')!.touched"
+              class="p-error block"
+              >Este campo deve ter pelo menos 2 caracteres</small
+            >
+            <small
+              *ngIf="editForm.get('nomeCompleto')!.errors?.['maxlength']"
+              class="p-error block"
+              >Este campo não pode ter mais de 200 caracteres.</small
+            >
+          </section>
+        </form>
+      </div>
+
+      <div class="card-footer bg-white text-end">
+        <button
+          *ngIf="!isModal"
+          id="bto-voltar"
+          type="button"
+          class="btn btn-white fa-lg me-2"
+          (click)="cancelar()"
+        >
+          <i class="fa fa-arrow-left fa-lg me-2"></i>
+          Voltar
+        </button>
+        <button
+          id="bto-salvar"
+          type="submit"
+          (click)="salvar()"
+          class="btn btn-primary me-2"
+          [disabled]="editForm.invalid || salvando"
+        >
+          <i class="fa fa-save fa-lg me-2"></i>
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

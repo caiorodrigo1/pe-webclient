@@ -1,0 +1,24 @@
+<main class="modal-body">
+  <div *ngIf="pdf">
+    <div>
+      <div *ngIf="!finalizado" style="display: flex; justify-content: center">
+        <p-progressSpinner></p-progressSpinner>
+      </div>
+      <ngx-extended-pdf-viewer
+        [src]="link"
+        [textLayer]="true"
+        (pdfLoaded)="exibir()"
+        [showDrawEditor]="false"
+        [showOpenFileButton]="false"
+        [showTextEditor]="false"
+        [showPresentationModeButton]="true"
+        [zoom]="'page-actual'"
+        height="90vh"
+      ></ngx-extended-pdf-viewer>
+    </div>
+  </div>
+
+  <div *ngIf="img" style="width: 100%">
+    <img [src]="link" alt="Imagem do Documento" style="max-width: 100%" />
+  </div>
+</main>

@@ -1,0 +1,212 @@
+<h1 class="page-header">Dashboard <small>visão geral</small></h1>
+
+<!-- <ngx-charts-line-chart></ngx-charts-line-chart> -->
+
+<section class="row">
+  <div class="col-xl-3 col-md-6">
+    <div class="widget widget-stats bg-red">
+      <div class="stats-icon"><i class="fa fa-clock"></i></div>
+      <div class="stats-info text-white">
+        <h4>NÃO LIDOS</h4>
+        <p>{{ dashboard?.totalizadores?.naoLido }}</p>
+      </div>
+
+      <div class="stats-link" style="height: 32px">
+        <!-- <a [routerLink]="['processo', 'tramitados']">Abrir Não Lidos <i class="fa fa-arrow-alt-circle-right"></i></a> -->
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="widget widget-stats bg-lime">
+      <div class="stats-icon"><i class="fa fa-plus"></i></div>
+      <div class="stats-info text-white">
+        <h4>CRIADOS</h4>
+        <p>{{ dashboard?.totalizadores?.criados }}</p>
+      </div>
+
+      <div class="stats-link">
+        <a routerLink="/processo/criados"
+          >Abrir Criados <i class="fa fa-arrow-alt-circle-right"></i
+        ></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="widget widget-stats bg-orange">
+      <div class="stats-icon"><i class="fa fa-star"></i></div>
+      <div class="stats-info text-white">
+        <h4>FAVORITOS</h4>
+        <p>{{ dashboard?.totalizadores?.favoritos }}</p>
+      </div>
+
+      <div class="stats-link">
+        <a routerLink="/processo/favoritos"
+          >Abrir Favoritos <i class="fa fa-arrow-alt-circle-right"></i
+        ></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="widget widget-stats bg-info">
+      <div class="stats-icon"><i class="fa fa-hourglass"></i></div>
+      <div class="stats-info text-white">
+        <h4>PENDENTES NO SETOR</h4>
+        <p>{{ dashboard?.totalizadores?.pendenteSetor }}</p>
+      </div>
+
+      <div class="stats-link">
+        <a routerLink="/processo/tramitados"
+          >Abrir Recebidos <i class="fa fa-arrow-alt-circle-right"></i
+        ></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="row mb-4" *ngIf="!carregado">
+  <p-skeleton width="100%" height="25rem"></p-skeleton>
+</section>
+
+<section class="row" *ngIf="carregado">
+  <div class="col-xl-12">
+    <div class="widget-chart with-sidebar">
+      <div class="widget-chart-content">
+        <h4 class="chart-title">
+          Evolução na movimentação processual de
+          {{ dashboard!.evolucaoProcessos![11]!.mes! | mesSigla }}-{{
+            dashboard!.evolucaoProcessos![11]!.ano!
+          }}
+          à {{ dashboard!.evolucaoProcessos![0]!.mes! | mesSigla }}-{{
+            dashboard!.evolucaoProcessos![0]!.ano!
+          }}
+          <!-- <small>Where do our visitors come from</small>-->
+        </h4>
+        <div id="area-chart" class="h-300px widget-chart-full-width">
+          <!-- renderiza o gráfico Stacked-->
+        </div>
+      </div>
+      <div class="widget-chart-sidebar">
+        <div class="chart-number">
+          {{
+            dashboard!.totalizadores!.enviados! +
+              dashboard!.totalizadores!.recebidos!
+          }}
+          <small>Processos movimentados *</small>
+        </div>
+        <div class="flex-grow-1 d-flex align-items-center">
+          <div id="donut-chart" class="h-250px">
+            <!-- renderiza o gráfico Pie -->
+          </div>
+        </div>
+
+        <div class="chart-number">
+          <br />
+          <!-- <small>* Últimos 30 dias</small> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+  <div class="col-xl-4">
+    <div class="panel panel-default" data-sortable-id="index-1">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          Visitors Origin
+        </h4>
+      </div>
+      <div id="visitors-map" style="height: 170px;" ></div>
+      <div class="list-group list-group-flush">
+        <a href="javascript:;" class="list-group-item rounded-0 list-group-item-action d-flex justify-content-between align-items-center text-ellipsis">
+          1. United State
+          <span class="badge bg-blue fs-10px">20.95%</span>
+        </a>
+        <a href="javascript:;" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center text-ellipsis">
+          2. India
+          <span class="badge bg-green fs-10px">16.12%</span>
+        </a>
+        <a href="javascript:;" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center text-ellipsis">
+          3. Mongolia
+          <span class="badge bg-gray-600 fs-10px">14.99%</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  -->
+</section>
+
+<section class="row">
+  <div class="col-xl-6 col-md-6">
+    <div class="widget widget-stats">
+      <div class="stats-content">
+        <div class="stats-title">Enviados</div>
+        <div class="stats-number">
+          {{ dashboard?.totalizadores?.enviados }}
+          <!-- <span class="increase"><i class="fa fa-caret-up"></i> 31.55%</span> -->
+        </div>
+
+        <div class="stats-progress progress">
+          <div class="progress-bar" style="width: 100%"></div>
+        </div>
+        <!-- <div class="stats-desc">Últimos 30 dias</div> -->
+        <div class="stats-link">
+          <a [routerLink]="['processo', 'enviados']"
+            >Abrir Enviados <i class="fa fa-arrow-alt-circle-right"></i
+          ></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6 col-md-6">
+    <div class="widget widget-stats">
+      <div class="stats-content">
+        <div class="stats-title">Recebidos</div>
+        <div class="stats-number">
+          {{ dashboard?.totalizadores?.recebidos }}
+          <!-- <span class="decrease"><i class="fa fa-caret-down"></i> 25.33%</span> -->
+        </div>
+        <div class="stats-progress progress">
+          <div class="progress-bar" style="width: 100%"></div>
+        </div>
+        <!-- <div class="stats-desc">Últimos 30 dias</div> -->
+        <div class="stats-link">
+          <a [routerLink]="['processo', 'recebidos']"
+            >Abrir Recebidos <i class="fa fa-arrow-alt-circle-right"></i
+          ></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="col-xl-3 col-md-6">
+    <div class="widget widget-stats ">
+      <div class="stats-content">
+        <div class="stats-title">Tempo médio de resposta</div>
+        <div class="stats-number">02:12:23 <span class="decrease"><i class="fa fa-caret-down"></i> 36.23%</span></div>
+        <div class="stats-progress progress">
+          <div class="progress-bar" style="width: 100%;"></div>
+        </div>
+        <div class="stats-desc">Últimos 30 dias</div>
+      </div>
+    </div>
+  </div> -->
+  <!-- END col-3 -->
+  <!-- BEGIN col-3 -->
+  <!-- <div class="col-xl-3 col-md-6">
+    <div class="widget widget-stats ">
+      <div class="stats-content">
+        <div class="stats-title">Tempo médio de resp. do setor</div>
+        <div class="stats-number">3d 02h <span class="increase"><i class="fa fa-caret-up"></i> 101.53%</span></div>
+        <div class="stats-progress progress">
+          <div class="progress-bar" style="width: 100%;"></div>
+        </div>
+        <div class="stats-desc">Últimos 30 dias</div>
+      </div>
+    </div>
+  </div> -->
+  <!-- END col-3 -->
+</section>

@@ -1,0 +1,405 @@
+<main class="m-4">
+  <div class="d-flex flex-column align-items-center">
+    <h2 class="m-3">Consulta Pública</h2>
+
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="card" style="max-width: 500px">
+          <div class="card-header bg-primary p-1"></div>
+
+          <div class="card-body formulario">
+            <section class="row">
+              <div class="col-md-12">
+                <label for="campo_cliente" class="label-campo"
+                  ><strong>Cliente:</strong
+                  ><span class="text-danger">*</span></label
+                >
+                <div class="p-input-icon-right w-100">
+                  <p-dropdown
+                    inputId="campo_cliente"
+                    name="cliente"
+                    [options]="clienteLista"
+                    placeholder="Selecione o Cliente"
+                    [filter]="true"
+                    filterBy="nome"
+                    filterPlaceholder="Procurar Cliente"
+                    emptyFilterMessage="Nenhum resultado encontrado"
+                    dataKey="id"
+                    [(ngModel)]="cliente"
+                    (ngModelChange)="verificarCliente()"
+                  >
+                    <ng-template let-item pTemplate="selectedItem">
+                      {{ item.nome }}
+                    </ng-template>
+                    <ng-template let-item pTemplate="item">
+                      {{ item.nome }}
+                    </ng-template>
+                  </p-dropdown>
+                </div>
+              </div>
+            </section>
+
+            <form class="formulario" role="form" [formGroup]="editForm">
+              <section class="row">
+                <div class="col-md-12">
+                  <label for="campo_numeroProcesso" class="label-campo">
+                    <strong>Número do Processo:</strong>
+                    <span class="text-danger">*</span></label
+                  >
+                  <div class="p-input-icon-right w-100">
+                    <input
+                      pInputText
+                      id="campo_numeroProcesso"
+                      name="numeroProcesso"
+                      formControlName="numeroProcesso"
+                      type="text"
+                      maxlength="17"
+                      class="p-inputtext-sm"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <section class="row">
+                <div class="col-md-12">
+                  <label for="campo_interessado" class="label-campo">
+                    <strong>Interessado no Processo:</strong>
+                    <span class="text-danger">*</span></label
+                  >
+                  <div class="p-input-icon-right w-100">
+                    <input
+                      pInputText
+                      id="campo_interessado"
+                      name="interessado"
+                      formControlName="interessado"
+                      type="text"
+                      class="p-inputtext-sm"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <section class="row">
+                <div class="col-md-12">
+                  <label for="campo_orgao" class="label-campo"
+                    ><strong>Orgão:</strong
+                    ><span class="text-danger">*</span></label
+                  >
+                  <div class="p-input-icon-right w-100">
+                    <p-dropdown
+                      inputId="campo_orgao"
+                      name="orgao"
+                      formControlName="orgao"
+                      [options]="orgaoLista"
+                      placeholder="Selecione o Orgão"
+                      [filter]="true"
+                      filterBy="nome"
+                      filterPlaceholder="Procurar orgão"
+                      emptyFilterMessage="Nenhum resultado encontrado"
+                      dataKey="id"
+                      (onChange)="verificarOrgao($event.value)"
+                    >
+                      <ng-template let-item pTemplate="selectedItem">
+                        {{ item.sigla }}
+                      </ng-template>
+                      <ng-template let-item pTemplate="item">
+                        {{ item.sigla }}
+                      </ng-template>
+                    </p-dropdown>
+                  </div>
+                </div>
+              </section>
+
+              <section class="row">
+                <div class="col-md-12">
+                  <label for="campo_setor" class="label-campo"
+                    ><strong>Setor:</strong
+                    ><span class="text-danger">*</span></label
+                  >
+                  <div class="p-input-icon-right w-100">
+                    <p-dropdown
+                      inputId="campo_setor"
+                      name="setor"
+                      formControlName="setor"
+                      [options]="setorLista"
+                      placeholder="Selecione o Setor"
+                      [filter]="true"
+                      filterBy="nome"
+                      filterPlaceholder="Procurar Setor"
+                      emptyFilterMessage="Nenhum resultado encontrado"
+                      dataKey="id"
+                    >
+                      <ng-template let-item pTemplate="selectedItem">
+                        {{ item.sigla }}
+                      </ng-template>
+                      <ng-template let-item pTemplate="item">
+                        {{ item.sigla }}
+                      </ng-template>
+                    </p-dropdown>
+                  </div>
+                </div>
+              </section>
+
+              <section class="row">
+                <div class="col-md-6">
+                  <label for="campo_dataInicial" class="label-campo"
+                    ><strong>Data Inicial:</strong
+                    ><span class="text-danger">*</span></label
+                  >
+                  <div class="p-input-icon-right w-100">
+                    <p-calendar
+                      inputId="campo_dataInicial"
+                      name="dataInicial"
+                      formControlName="dataInicial"
+                      class="campo-data"
+                      [showIcon]="true"
+                      dateFormat="dd/mm/yy"
+                      placeholder="dd/mm/aaaa"
+                      [showButtonBar]="true"
+                      [maxDate]="dataMax"
+                      (ngModelChange)="verificarData()"
+                    ></p-calendar>
+                  </div>
+
+                  <small *ngIf="erroDatas" class="p-error block"
+                    >A data inicial não pode ser maior que a data final
+                  </small>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="campo_dataFinal" class="label-campo"
+                    ><strong>Data Inicial:</strong
+                    ><span class="text-danger">*</span></label
+                  >
+                  <div class="p-input-icon-right w-100">
+                    <p-calendar
+                      inpiutId="campo_dataFinal"
+                      name="dataFinal"
+                      formControlName="dataFinal"
+                      [showIcon]="true"
+                      dateFormat="dd/mm/yy"
+                      placeholder="dd/mm/aaaa"
+                      [showButtonBar]="true"
+                      [maxDate]="dataMax"
+                      (ngModelChange)="verificarData()"
+                    ></p-calendar>
+                  </div>
+                </div>
+              </section>
+            </form>
+          </div>
+
+          <div class="card-footer bg-white text-end">
+            <button
+              id="bto-voltar"
+              type="button"
+              class="btn btn-white fa-lg me-2"
+              routerLink="/login"
+            >
+              <i class="fa fa-arrow-left fa-lg me-2"></i>
+              Voltar
+            </button>
+            <button
+              id="bto-limpar"
+              type="button"
+              class="btn btn-white me-2"
+              (click)="limpar()"
+            >
+              <i class="fa fa-refresh fa-lg me-2"></i>
+              Limpar
+            </button>
+            <button
+              id="bto-pesquisar"
+              type="submit"
+              (click)="pesquisar()"
+              class="btn btn-primary me-2"
+              [disabled]="habilitarPesquisa()"
+            >
+              <i class="fa fa-search fa-lg me-2"></i>
+              Pesquisar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4" *ngIf="exibir">
+    <div class="col-xl-12">
+      <div class="card">
+        <div class="card-header bg-primary p-1"></div>
+
+        <div class="d-flex justify-content-center mt-2">
+          <h3 style="color: #959a9d">Resultado da Pesquisa</h3>
+        </div>
+
+        <div class="card-body">
+          <div *ngIf="buscando" class="d-flex justify-content-center my-4">
+            <p-progressSpinner></p-progressSpinner>
+          </div>
+
+          <div *ngIf="!buscando" id="entidades" class="tab-content p-3">
+            <p-table
+              #tabela
+              [value]="processoLista"
+              styleClass="p-datatable-striped"
+              responsiveLayout="stack"
+              [breakpoint]="'960px'"
+              [selectionPageOnly]="true"
+              dataKey="id"
+              [resizableColumns]="true"
+              [columns]="selectedColumns"
+              [reorderableColumns]="true"
+              columnResizeMode="fit"
+              [loading]="buscando"
+              [lazy]="false"
+              [paginator]="true"
+              [rows]="10"
+              [showCurrentPageReport]="true"
+              [rowsPerPageOptions]="[10, 25, 50]"
+              currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} registros"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th
+                    *ngFor="let col of selectedColumns"
+                    pResizableColumn
+                    pReorderableColumn
+                    [pSortableColumn]="col.dataMap"
+                  >
+                    <div class="top-header">
+                      {{ col.header }}
+                      <p-columnFilter
+                        [type]="col.type"
+                        [field]="col.dataMap"
+                        display="menu"
+                      ></p-columnFilter>
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </div>
+                  </th>
+                  <th></th>
+                </tr>
+              </ng-template>
+
+              <ng-template
+                pTemplate="body"
+                let-item
+                let-columns="selectedColumns"
+                let-index="rowIndex"
+              >
+                <tr [pSelectableRow]="item" [pReorderableRow]="index">
+                  <td *ngFor="let col of selectedColumns">
+                    <div
+                      *ngIf="
+                        col.field === 'numeroProcesso';
+                        then blocoNumero;
+                        else blocoOutros
+                      "
+                    ></div>
+
+                    <ng-template #blocoNumero>
+                      <div
+                        (click)="consutarProcesso(item.numeroProcesso)"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalTramitacao"
+                        class="link"
+                        [innerHTML]="
+                          item | getData : col.dataMap | bindField : col
+                        "
+                      ></div>
+                    </ng-template>
+
+                    <ng-template #blocoOutros>
+                      <div
+                        [innerHTML]="
+                          item | getData : col.dataMap | bindField : col
+                        "
+                      ></div>
+                    </ng-template>
+                  </td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td></td>
+                  <td>
+                    <span>Nenhum registro foi encontrado</span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal Tramitações -->
+<div
+  class="modal fade"
+  id="modalTramitacao"
+  tabindex="-1"
+  aria-labelledby="tramitacaoModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="documentoModalLabel">
+          <strong>
+            Tramitações do Processo:
+            {{ processo.numeroProcesso | numeroProcesso }}</strong
+          >
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="carregado = false"
+        ></button>
+      </div>
+      <div class="modal-body" *ngIf="exibir">
+        <p-table
+          [value]="processo.tramitacoes!.reverse()"
+          responsiveLayout="stack"
+          [tableStyle]="{ 'min-width': '50rem' }"
+          currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} registros"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Tipo</th>
+              <th>Setor Origem</th>
+              <th>Setor Destino</th>
+              <th>Enviado Por</th>
+              <th>Enviado Em</th>
+              <th>Usuário Destino</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td>{{ item.tipo }}</td>
+              <td>{{ item.setorOrigem?.sigla }}</td>
+              <td>{{ item.setorDestino!.sigla! }}</td>
+              <td>{{ item.usuarioOrigem!.nome! }}</td>
+              <td>
+                {{ item.dataHoraTramitacao! | date : "dd/MM/yyyy, hh:mm" }}
+              </td>
+              <td>{{ item.usuarioDestino?.nome! }}</td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td>
+                <span>Nenhum registro foi encontrado</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+</div>

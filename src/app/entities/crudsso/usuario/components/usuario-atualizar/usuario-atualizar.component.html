@@ -1,0 +1,234 @@
+<top-cabecalho
+  [itens]="[recipiente, acao]"
+  [recipiente]="acao + ' ' + recipiente"
+  [entidade]="recipiente"
+></top-cabecalho>
+
+<main class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header bg-primary p-1"></div>
+
+      <div class="card-body" *ngIf="!carregando">
+        <form
+          class="formulario"
+          name="editForm"
+          role="form"
+          novalidate
+          (ngSubmit)="salvar()"
+          [formGroup]="editForm"
+        >
+          <section class="row">
+            <div class="col-md-8">
+              <label for="campo_nome" class="label-campo">
+                <strong>Nome:</strong>
+                <span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <input
+                  pInputText
+                  id="campo_nome"
+                  name="nome"
+                  formControlName="nome"
+                  type="text"
+                  maxlength="300"
+                  class="p-inputtext-sm"
+                  [class.ng-invalid]="editForm.get('nome')!.invalid"
+                  [class.ng-dirty]="editForm.get('nome')!.touched"
+                />
+                <i
+                  *ngIf="
+                    editForm.get('nome')!.invalid &&
+                    editForm.get('nome')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['required'] && editForm.get('nome')!.touched"
+                class="p-error block"
+                >Este campo é obrigatório</small
+              >
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['minlength'] && editForm.get('nome')!.touched"
+                class="p-error block"
+                >Este campo deve ter pelo menos 2 caracteres</small
+              >
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['maxlength']"
+                class="p-error block"
+                >Este campo não pode ter mais de 300 caracteres.</small
+              >
+            </div>
+
+            <div class="col-md-4">
+              <label for="campo_cpf" class="label-campo">
+                <strong>CPF:</strong>
+                <span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <p-inputMask
+                  inputId="campo_cpf"
+                  name="cpf"
+                  formControlName="cpf"
+                  mask="999.999.999-99"
+                  [unmask]="true"
+                  (ngModelChange)="testarValidadeCpf($event)"
+                  [class.ng-invalid]="editForm.get('cpf')!.invalid"
+                  [class.ng-dirty]="editForm.get('cpf')!.touched"
+                ></p-inputMask>
+                <i
+                  *ngIf="
+                    editForm.get('cpf')!.invalid && editForm.get('cpf')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('cpf')!.errors?.['required'] && editForm.get('cpf')!.touched"
+                class="p-error block"
+                >O campo cpf é obrigatório</small
+              >
+              <small
+                *ngIf="editForm.get('cpf')!.invalid && editForm.get('cpf')!.touched && !editForm.get('cpf')!.errors?.['required']"
+                class="p-error block"
+                >O CPF informado é inválido</small
+              >
+            </div>
+          </section>
+
+          <section class="row">
+            <div class="col-md-8">
+              <label for="campo_email" class="label-campo">
+                <strong>Email:</strong>
+                <span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <input
+                  pInputText
+                  id="campo_email"
+                  name="email"
+                  formControlName="email"
+                  type="email"
+                  placeholder="exemplo@email.com"
+                  autocomplete="email"
+                  maxlength="300"
+                  class="p-inputtext-sm"
+                  [class.ng-invalid]="editForm.get('email')!.invalid"
+                  [class.ng-dirty]="editForm.get('email')!.touched"
+                />
+                <i
+                  *ngIf="
+                    editForm.get('email')!.invalid &&
+                    editForm.get('email')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('email')!.errors?.['required'] && editForm.get('email')!.touched"
+                class="p-error block"
+                >Este campo é obrigatório</small
+              >
+              <!-- <small
+            *ngIf="editForm.get('email')!.touched && !editForm.get('email')!.errors?.['email']"
+            class="p-error block"
+            >O E-mail informado é inválido</small
+          > -->
+              <small
+                *ngIf="editForm.get('email')!.errors?.['minlength'] && editForm.get('email')!.touched"
+                class="p-error block"
+                >Este campo deve ter pelo menos 2 caracteres</small
+              >
+              <small
+                *ngIf="editForm.get('email')!.errors?.['maxlength']"
+                class="p-error block"
+                >Este campo não pode ter mais de 300 caracteres.</small
+              >
+            </div>
+
+            <div class="col-md-4">
+              <label for="campo_senha" class="label-campo">
+                <strong>Senha:</strong>
+                <span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <input
+                  pInputText
+                  id="campo_senha"
+                  name="senha"
+                  formControlName="senha"
+                  type="password"
+                  autocomplete="current-password"
+                  maxlength="300"
+                  class="p-inputtext-sm"
+                  [class.ng-invalid]="editForm.get('senha')!.invalid"
+                  [class.ng-dirty]="editForm.get('senha')!.touched"
+                />
+                <i
+                  *ngIf="
+                    editForm.get('senha')!.invalid &&
+                    editForm.get('senha')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('senha')!.errors?.['required'] && editForm.get('senha')!.touched"
+                class="p-error block"
+                >Este campo é obrigatório</small
+              >
+              <small
+                *ngIf="editForm.get('senha')!.errors?.['minlength'] && editForm.get('senha')!.touched"
+                class="p-error block"
+                >Este campo deve ter pelo menos 2 caracteres</small
+              >
+              <small
+                *ngIf="editForm.get('senha')!.errors?.['maxlength']"
+                class="p-error block"
+                >Este campo não pode ter mais de 300 caracteres.</small
+              >
+            </div>
+          </section>
+
+          <section class="row">
+            <div class="col-md-1">
+              <label class="form-check-label label-campo" for="campo_ativo">
+                <strong>Ativo:</strong>
+              </label>
+              <div>
+                <p-inputSwitch
+                  inputId="campo_ativo"
+                  name="ativo"
+                  formControlName="ativo"
+                ></p-inputSwitch>
+              </div>
+            </div>
+          </section>
+        </form>
+      </div>
+
+      <div class="card-footer bg-white text-end">
+        <button
+          id="bto-voltar"
+          type="button"
+          class="btn btn-white fa-lg me-2"
+          (click)="cancelar()"
+        >
+          <i class="fa fa-arrow-left fa-lg me-2"></i>
+          Voltar
+        </button>
+        <button
+          id="bto-salvar"
+          type="submit"
+          (click)="salvar()"
+          class="btn btn-primary me-2"
+          [disabled]="editForm.invalid || salvando"
+        >
+          <i class="fa fa-save fa-lg me-2"></i>
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

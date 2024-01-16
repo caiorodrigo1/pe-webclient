@@ -1,0 +1,78 @@
+<main class="modal-body formulario">
+  <div>
+    <section class="row m-1">
+      <div class="col-md-11">Deseja mesmo {{ acao }} este Documento?</div>
+    </section>
+
+    <div *ngIf="aguardando" class="d-flex justify-content-center my-4">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+
+    <form [hidden]="aguardando">
+      <section class="row" *ngIf="acao == 'REJEITAR'">
+        <div class="col-md-12">
+          <label for="campo_motivo" class="label-campo">
+            <strong>Motivo:</strong> <span class="text-danger">*</span></label
+          >
+          <div class="p-input-icon-right w-100">
+            <input
+              pInputText
+              id="campo_motivo"
+              name="motivo"
+              type="text"
+              maxlength="50"
+              class="p-inputtext-sm"
+              [(ngModel)]="motivo"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section hidden="true">
+        <input id="username" type="text" autocomplete="username" />
+      </section>
+
+      <section class="row">
+        <div class="col-md-12">
+          <label for="campo_senha" class="label-campo">
+            <strong>Senha:</strong> <span class="text-danger">*</span></label
+          >
+          <div class="p-input-icon-right w-100">
+            <input
+              pInputText
+              id="campo_senha"
+              name="senha"
+              type="password"
+              autocomplete="new-password"
+              maxlength="50"
+              class="p-inputtext-sm"
+              [(ngModel)]="senha"
+            />
+          </div>
+        </div>
+      </section>
+    </form>
+  </div>
+
+  <hr />
+
+  <footer class="d-flex justify-content-end">
+    <button
+      *ngIf="acao == 'ASSINAR'"
+      [disabled]="!senha || aguardando"
+      class="btn btn-green"
+      (click)="confirmarAcao()"
+    >
+      Assinar
+    </button>
+    <button
+      *ngIf="acao == 'REJEITAR'"
+      [disabled]="!senha || aguardando"
+      class="btn btn-danger"
+      (click)="confirmarAcao()"
+    >
+      Rejeitar
+    </button>
+    &nbsp;
+  </footer>
+</main>

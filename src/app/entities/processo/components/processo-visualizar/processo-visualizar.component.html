@@ -1,0 +1,756 @@
+<top-cabecalho
+  [itens]="[recipiente, 'Visualizar']"
+  [recipiente]="'Visualizar ' + recipiente"
+  [entidade]="recipiente"
+></top-cabecalho>
+
+<p-confirmDialog></p-confirmDialog>
+
+<div *ngIf="carregando">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
+<main class="row" *ngIf="!carregando">
+  <div class="col-xl-12">
+    <!--INFO DO PROCESSO-->
+    <div class="accordion mb-4" id="accordion">
+      <div class="accordion-item border-0">
+        <div class="accordion-header" id="headingOne">
+          <button
+            class="accordion-button bg-primary text-white px-3 pointer-cursor collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseOne"
+          >
+            <h3 class="m-0">
+              Número do processo:
+              <strong>{{ processo.numeroProcesso | numeroProcesso }}</strong>
+              <span *ngIf="processo.interessados!.length > 0">
+                &nbsp;-
+                {{ processo.interessados![0].nome }}
+                <span *ngIf="processo.interessados!.length > 1">...</span>
+              </span>
+            </h3>
+          </button>
+        </div>
+        <div
+          id="collapseOne"
+          class="accordion-collapse collapse"
+          data-bs-parent="#accordion"
+        >
+          <div class="accordion-body bg-white">
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <td><strong>Tipo:</strong> {{ processo.tipo!.nome }}</td>
+                  <td>
+                    <strong>Natureza:</strong> {{ processo.naturezaProcesso }}
+                  </td>
+                </tr>
+                <tr>
+                  <td *ngIf="processo.naturezaProcesso == 'EXTERNO'">
+                    <strong>Numero Externo: </strong
+                    >{{ processo.numeroOriginal }}
+                  </td>
+                  <td *ngIf="processo.naturezaProcesso == 'EXTERNO'">
+                    <strong>Data de Autuação: </strong>
+                    {{ processo.dataAutuacao | date : "short" }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Assunto:</strong> {{ processo.assunto!.nome }}
+                  </td>
+                  <td>
+                    <strong>Nível de acesso:</strong> {{ processo.nivelAcesso }}
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    colspan="2"
+                    *ngIf="
+                      processo.nivelAcesso == 'RESTRITO' ||
+                      processo.nivelAcesso == 'SIGILOSO'
+                    "
+                  >
+                    <strong>Hipótese Legal:</strong>
+                    {{ processo.hipoteseLegal?.descricao }}
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2">
+                    <strong>Descrição:</strong>
+                    <p [innerHTML]="sanitizeContent(processo.descricao!)"></p>
+                  </td>
+                </tr>
+                <tr *ngIf="processo.processoPai && paiCarregado">
+                  <td colspan="2">
+                    <p><strong>Este Processo Faz Parte do Processo:</strong></p>
+                    <table class="table">
+                      <tr>
+                        <td>
+                          <span
+                            class="link-visualizar"
+                            (click)="visualizarProcesso(processoPai.id!)"
+                            >{{
+                              processoPai.numeroProcesso | numeroProcesso
+                            }}</span
+                          >
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2" *ngIf="processo.processoPrincipal">
+                    <p><strong>Este Processo Faz Parte do Processo:</strong></p>
+                    <table class="table">
+                      <tr>
+                        <td>
+                          <span
+                            class="link-visualizar"
+                            (click)="visualizarProcesso(processoPrincipal.id!)"
+                            >{{
+                              processoPrincipal.numeroProcesso | numeroProcesso
+                            }}</span
+                          >
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr *ngIf="processosJuntados.length > 0">
+                  <td colspan="2">
+                    <p><strong>Processos Juntados:</strong></p>
+                    <table class="table">
+                      <tr *ngFor="let item of processosJuntados">
+                        <td>
+                          <span
+                            class="link-visualizar"
+                            (click)="visualizarProcesso(item.id!)"
+                            >{{ item.numeroProcesso | numeroProcesso }}</span
+                          >
+                          <button
+                            type="button"
+                            class="btn text-primary m-1 top-btn"
+                            tooltipPosition="top"
+                            pTooltip="Desjuntada"
+                            (click)="confirmarDesjuntada(item.id!)"
+                          >
+                            <i class="fa-solid fa-unlink fa-lg"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr *ngIf="processosAnexos.length > 0">
+                  <td colspan="2">
+                    <p><strong>Processos Anexos:</strong></p>
+                    <table class="table">
+                      <tr *ngFor="let item of processosAnexos">
+                        <td>
+                          <span
+                            class="link-visualizar"
+                            (click)="visualizarProcesso(item.id!)"
+                            >{{ item.numeroProcesso | numeroProcesso }}</span
+                          >
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--NAV-->
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a
+          id="tab0"
+          #tab_0
+          [href]="tabelas[0]"
+          data-bs-toggle="tab"
+          class="nav-link active"
+        >
+          <h5 class="d-sm-none">Documentos</h5>
+          <h5 class="d-sm-block d-none">Documentos</h5>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          id="tab1"
+          #tab_1
+          [href]="tabelas[1]"
+          data-bs-toggle="tab"
+          class="nav-link"
+        >
+          <h5 class="d-sm-none">Histórico</h5>
+          <h5 class="d-sm-block d-none">Histórico de Tramitações</h5>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          id="tab2"
+          #tab_2
+          [href]="tabelas[2]"
+          data-bs-toggle="tab"
+          class="nav-link"
+        >
+          <h5 class="d-sm-none">Interessados</h5>
+          <h5 class="d-sm-block d-none">Interessados</h5>
+        </a>
+      </li>
+    </ul>
+
+    <div id="entidades" class="tab-content panel rounded-0 p-4 m-0">
+      <!-- TABELA DOCUMENTOS-->
+      <div class="tab-pane fade active show" id="documentos">
+        <div>
+          <p class="text-end mb-3" *ngIf="processo.situacao !== 'ARQUIVADO'">
+            <button
+              type="button"
+              class="btn btn-primary me-2 mb-2"
+              data-bs-toggle="modal"
+              data-bs-target="#modalDocumento"
+              (click)="signatarios = []; limparFormularios()"
+            >
+              <i class="fa-solid fa-file-circle-plus fa-lg me-2"></i>Adicionar
+              Documento
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary me-2 mb-2"
+              data-bs-toggle="modal"
+              data-bs-target="#modalAnexo"
+              (click)="signatarios = []; limparFormularios()"
+            >
+              <i class="fa-solid fa-file-circle-plus fa-lg me-2"></i>Adicionar
+              Anexo
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary me-2 mb-2"
+              data-bs-toggle="modal"
+              data-bs-target="#modalDespacho"
+              (click)="limparFormularios()"
+            >
+              <i class="fa-solid fa-file-circle-plus fa-lg me-2"></i>Adicionar
+              Despacho
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary mb-2"
+              (click)="chamarDesmembramento()"
+            >
+              <i class="fa-solid fa-file-circle-minus fa-lg me-2"></i>Desmembrar
+              Processo
+            </button>
+          </p>
+
+          <p-table
+            #tabela_0
+            [value]="listaDocumentosProcesso"
+            styleClass="p-datatable-striped"
+            responsiveLayout="stack"
+            [breakpoint]="'960px'"
+            dataKey="id"
+            [resizableColumns]="true"
+            [reorderableColumns]="true"
+            columnResizeMode="fit"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th colspan="1"></th>
+                <th>Tipo</th>
+                <th>Nome/Assunto</th>
+                <th>Signatários</th>
+                <th>Arquivo</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-item>
+              <tr>
+                <td>
+                  <top-bto
+                    tipo="excluir"
+                    [disabled]="salvando"
+                    (click)="excluirItem(item.documento.id, item.modelo)"
+                    *ngIf="
+                      usuarioLogado.identificadorUsuario ==
+                        item.documento.identificadorUsuario &&
+                      item.documento.tramitacaoGuid == null &&
+                      item.tipo !== 'Termo de Juntada'
+                    "
+                  ></top-bto>
+                </td>
+                <td>
+                  <div
+                    class="link-visualizar"
+                    (click)="visualizarItem(item.documento, item.modelo)"
+                  >
+                    {{ item.tipo }}
+                    <span *ngIf="item.documento.numeracao">
+                      - {{ item.documento.numeracao }}</span
+                    >
+                  </div>
+                </td>
+                <td>{{ item.nomeAssunto }}</td>
+                <td>
+                  <div *ngFor="let signatario of item.documento.signatarios">
+                    <div class="d-flex align-items-center">
+                      {{ signatario.nomeUsuario }}
+                      <top-bto
+                        *ngIf="
+                          signatario.usuarioAssinante?.identificador! ===
+                            usuarioLogado.identificadorUsuario &&
+                          signatario.statusSignatario === 'PENDENTE'
+                        "
+                        tipo="editar"
+                        (click)="chamarAssinatura(item)"
+                      ></top-bto>
+                      <i
+                        *ngIf="signatario.statusSignatario === 'ASSINADO'"
+                        class="pi pi-check mx-1"
+                      ></i>
+                    </div>
+                  </div>
+                  <top-bto
+                    *ngIf="processo.tramitacoes?.length === 0"
+                    tipo="adicionar"
+                    (click)="abrirModalSignatariosTardio(item)"
+                  ></top-bto>
+                </td>
+                <td>
+                  <i
+                    *ngIf="item.extensao === 'pdf'"
+                    class="fa-solid fa-file-pdf fa-2x text-primary"
+                  >
+                  </i>
+                  <i
+                    *ngIf="item.extensao === 'png' || item.extensao === 'jpg'"
+                    class="fa-solid fa-image fa-2x text-primary"
+                    style="font-size: 1.5rem"
+                  ></i>
+                  <i
+                    *ngIf="
+                      item.extensao !== 'png' &&
+                      item.extensao !== 'jpg' &&
+                      item.extensao !== 'pdf'
+                    "
+                    class="pi pi-file"
+                    style="font-size: 1.5rem"
+                  ></i>
+                  .{{ item.extensao }}
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <span>Nenhum registro foi encontrado</span>
+            </ng-template>
+          </p-table>
+        </div>
+
+        <!-- Modal Documento -->
+        <div
+          class="modal fade"
+          id="modalDocumento"
+          tabindex="-1"
+          aria-labelledby="documentoModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="documentoModalLabel">
+                  <strong>
+                    Adicionar Documento ao Processo:
+                    {{ processo.numeroProcesso | numeroProcesso }}</strong
+                  >
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <top-processo-documento
+                  [processo]="processo"
+                  [editForm]="editFormDocumento"
+                  [numeroDocumento]="1"
+                  [documentosAdicionados]="documentos"
+                  [variaveis]="variaveis"
+                  [signatarios]="true"
+                ></top-processo-documento>
+
+                <div class="card">
+                  <div class="card-header"><strong>Signatários</strong></div>
+                  <div class="d-flex flex-wrap">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-sm m-2"
+                      (click)="abrirModalSignatarios()"
+                    >
+                      <i class="pi pi-plus"></i>
+                    </button>
+                    <div *ngFor="let item of signatarios">
+                      <button
+                        class="btn btn-white btn-sm m-2"
+                        (click)="excluirSignatario(item)"
+                      >
+                        {{ item.nome }}
+                        <i class="pi pi-times-circle"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  id="bto-salvar-documentos"
+                  type="submit"
+                  class="btn btn-primary me-2"
+                  [disabled]="salvando || !editFormDocumento.valid"
+                  (click)="salvarDocumento()"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <i class="fa fa-save fa-lg me-2"></i>Salvar Documento
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Anexo -->
+        <div
+          class="modal fade"
+          id="modalAnexo"
+          tabindex="-1"
+          aria-labelledby="anexoModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="anexoModalLabel">
+                  <strong>
+                    Adicionar Anexo ao Processo:
+                    {{ processo.numeroProcesso | numeroProcesso }}</strong
+                  >
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <top-processo-anexo
+                  [processo]="processo"
+                  [anexosAdicionados]="anexos"
+                  [signatarios]="true"
+                ></top-processo-anexo>
+
+                <div class="card">
+                  <div class="card-header"><strong>Signatários</strong></div>
+                  <div class="d-flex flex-wrap">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-sm m-2"
+                      (click)="abrirModalSignatarios()"
+                    >
+                      <i class="pi pi-plus"></i>
+                    </button>
+                    <div *ngFor="let item of signatarios">
+                      <button
+                        class="btn btn-white btn-sm m-2"
+                        (click)="excluirSignatario(item)"
+                      >
+                        {{ item.nome }}
+                        <i class="pi pi-times-circle"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  id="bto-salvar-anexo"
+                  type="submit"
+                  class="btn btn-primary me-2"
+                  [disabled]="salvando || anexos.length < 1"
+                  (click)="salvarAnexo()"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <i class="fa fa-save fa-lg me-2"></i>Salvar Anexo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Despacho -->
+        <div
+          class="modal fade"
+          id="modalDespacho"
+          tabindex="-1"
+          aria-labelledby="despachoModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="despachoModalLabel">
+                  <strong>
+                    Adicionar Despacho ao Processo:
+                    {{ processo.numeroProcesso | numeroProcesso }}</strong
+                  >
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <top-processo-despacho
+                  [parent]="true"
+                  [processoId]="processo.id!"
+                  [editForm]="editFormDespacho"
+                ></top-processo-despacho>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  id="bto-salvar-despacho"
+                  type="submit"
+                  class="btn btn-primary me-2"
+                  [disabled]="salvando || !editFormDespacho.valid"
+                  (click)="salvarDespacho()"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <i class="fa fa-save fa-lg me-2"></i>Assinar e Salvar Despacho
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABELA TRAMITAÇÕES-->
+      <div class="tab-pane fade show" id="tramitacao">
+        <p-table
+          #tabela_1
+          [value]="processo.tramitacoes!"
+          styleClass="p-datatable-striped"
+          responsiveLayout="stack"
+          [breakpoint]="'960px'"
+          dataKey="id"
+          [resizableColumns]="true"
+          [reorderableColumns]="true"
+          columnResizeMode="fit"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>{{ defaultColumns[0].header }}</th>
+              <th>{{ defaultColumns[1].header }}</th>
+              <th>{{ defaultColumns[2].header }}</th>
+              <th>{{ defaultColumns[3].header }}</th>
+              <th>{{ defaultColumns[4].header }}</th>
+              <th>{{ defaultColumns[5].header }}</th>
+              <th>{{ defaultColumns[6].header }}</th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>{{ row.id }}</td>
+              <td>{{ row.tipo }}</td>
+              <td>{{ row.setorOrigem.descricao }}</td>
+              <td>
+                {{
+                  row.tipo !== "ENVIO_INSTITUICAO_EXTERNA"
+                    ? row.setorDestino.descricao
+                    : row.instituicaoExterna.nome
+                }}
+              </td>
+              <td>{{ row.usuarioOrigem.nome }}</td>
+              <td>
+                {{ row.dataHoraTramitacao | date : "dd/MM/yyyy " }}
+              </td>
+
+              <td *ngIf="row.usuarioDestino; else elseBlock">
+                {{ row.usuarioDestino.nome }}
+              </td>
+              <ng-template #elseBlock>
+                <td></td>
+              </ng-template>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage">
+            <span>Nenhum registro foi encontrado</span>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <!-- TABELA INTERESSADOS-->
+      <div class="tab-pane fade show" id="interessados">
+        <div>
+          <p *ngIf="processo.situacao !== 'ARQUIVADO'" class="text-end mb-3">
+            <button
+              type="button"
+              class="btn btn-primary me-2 mb-2"
+              data-bs-toggle="modal"
+              data-bs-target="#modalInteressado"
+            >
+              <i class="fa-solid fa-user-plus fa-lg me-2"></i>Adicionar
+              Interessado
+            </button>
+          </p>
+
+          <p-table
+            #tabela_2
+            [value]="processo.interessados!"
+            styleClass="p-datatable-striped"
+            responsiveLayout="stack"
+            [breakpoint]="'960px'"
+            dataKey="id"
+            [resizableColumns]="true"
+            [reorderableColumns]="true"
+            columnResizeMode="fit"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <!-- <th colspan="1"></th> -->
+                <th colspan="1" *ngIf="processo.tramitacoes!.length < 1"></th>
+                <th>{{ defaultColumns[9].header }}</th>
+                <th>{{ defaultColumns[10].header }}</th>
+                <th>{{ defaultColumns[11].header }}</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-item>
+              <tr>
+                <!-- <td>
+                  <top-bto
+                    tipo="excluir"
+                    [disabled]="salvando"
+                    (click)="excluirInteressado(item.id)"
+                    *ngIf="
+                      usuarioLogado.identificadorUsuario ==
+                        item.documento.identificadorUsuario &&
+                      item.documento.tramitacaoGuid == null
+                    "
+                  ></top-bto>
+                </td> -->
+
+                <td *ngIf="processo.tramitacoes!.length < 1">
+                  <top-bto
+                    tipo="excluir"
+                    [disabled]="salvando"
+                    (click)="excluirInteressado(item.id)"
+                  ></top-bto>
+                </td>
+                <td>{{ item.nome }}</td>
+                <td>{{ item.documento | cpf_cnpj }}</td>
+                <td>
+                  {{ item.dataAdicionadoProcesso | date : "dd/MM/yyyy " }}
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <span>Nenhum registro foi encontrado</span>
+            </ng-template>
+          </p-table>
+        </div>
+
+        <!-- Modal Interessado -->
+        <div
+          class="modal fade"
+          id="modalInteressado"
+          tabindex="-1"
+          aria-labelledby="interessadoModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="interessadoModalLabel">
+                  <strong>
+                    Adicionar interessados ao processo:
+                    {{ processo.numeroProcesso | numeroProcesso }}</strong
+                  >
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <top-processo-interessado
+                  [processo]="processo"
+                  [interessadosAdicionados]="interessados"
+                ></top-processo-interessado>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  id="bto-salvar-interessados"
+                  type="submit"
+                  class="btn btn-primary me-2"
+                  [disabled]="salvando || interessados.length < 1"
+                  (click)="salvarInteressados()"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <i class="fa fa-save fa-lg me-2"></i>Salvar Interessados
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--FOOTER-->
+      <section class="panel-footer mt-5">
+        <p class="text-end mb-0">
+          <button (click)="cancelar()" class="btn btn-white me-2">
+            <i class="fa fa-arrow-left fa-lg me-2"></i>Voltar
+          </button>
+        </p>
+      </section>
+    </div>
+  </div>
+</main>
+
+<!-- <iframe
+  *ngIf="fonteAtiva"
+  [src]="fonteImagem"
+  style="width: 800px; height: 500px"
+  frameborder="0"
+></iframe> -->
+<!-- 
+<iframe
+  src="http://docs.google.com/gview?url=https://topdownfront.blob.core.windows.net/blobfront/documentos/4fb8c48c-0361-409a-b3ba-e53b3755d1cb.pdf&embedded=true"
+  style="width: 800px; height: 500px"
+  frameborder="0"
+></iframe> -->

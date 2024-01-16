@@ -1,0 +1,232 @@
+<top-cabecalho
+  [itens]="[entidade, 'Lista']"
+  [recipiente]="recipiente"
+  [entidade]="entidade"
+></top-cabecalho>
+
+<p-confirmDialog rejectButtonStyleClass="p-button-outlined"></p-confirmDialog>
+
+<main class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header bg-primary p-1"></div>
+
+      <p class="text-end mb-0 mt-2">
+        <button
+          id="bto-criar"
+          type="button"
+          [routerLink]="['criar']"
+          class="btn btn-primary me-4"
+        >
+          <i class="fa fa-plus fa-lg me-2"></i>Criar {{ recipiente }}
+        </button>
+      </p>
+
+      <div class="card-body">
+        <div id="entidades" class="tab-content px-3">
+          <p-table
+            #dt1
+            [value]="unidades"
+            styleClass="p-datatable-striped"
+            responsiveLayout="stack"
+            [breakpoint]="'960px'"
+            [selectionPageOnly]="true"
+            dataKey="id"
+            [(selection)]="selecionados"
+            [rowSelectable]="linhaSelecionavel"
+            [globalFilterFields]="globalFilterFields()"
+            [resizableColumns]="true"
+            [columns]="selectedColumns"
+            [reorderableColumns]="true"
+            columnResizeMode="fit"
+            [loading]="carregando"
+            [lazy]="false"
+            (onLazyLoad)="lazyLoad($event)"
+            [paginator]="true"
+            [rows]="itemsPerPage"
+            [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[10, 25, 50]"
+            currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} registros"
+          >
+            <ng-template pTemplate="caption">
+              <div class="d-flex justify-content-between align-items-center">
+                <!-- <div>
+                  <p-multiSelect
+                    inputId="multiSelect"
+                    [options]="cols"
+                    [(ngModel)]="selectedColumns"
+                    optionLabel="header"
+                    selectedItemsLabel="{0} colunas selecionadas"
+                    [style]="{ 'min-width': '200px' }"
+                    placeholder="Selecionar colunas"
+                    class="selectColumns mx-2"
+                  >
+                  </p-multiSelect>
+                </div> -->
+
+                <div
+                  class="d-flex justify-content-between align-items-center w-100"
+                >
+                  <span class="p-input-icon-left globalSearch w-100">
+                    <i class="pi pi-search p-input-icon-top"></i>
+                    <input
+                      id="globalFilter"
+                      [(ngModel)]="globalFilter"
+                      pInputText
+                      type="text"
+                      (input)="
+                        dt1.filterGlobal($any($event.target).value, 'contains')
+                      "
+                      [placeholder]="'Pesquisar ' + recipiente"
+                      class="w-100"
+                    />
+                  </span>
+
+                  <button
+                    pButton
+                    title="Limpar pesquisa"
+                    class="p-button-rounded p-button-info p-button-text"
+                    icon="pi pi-filter-slash"
+                    (click)="atualizarTela(dt1)"
+                  ></button>
+                </div>
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+              <tr>
+                <!-- <th>
+                  <p-tableHeaderCheckbox
+                    inputId="checkBox"
+                  ></p-tableHeaderCheckbox>
+                </th> -->
+                <th
+                  *ngFor="let col of selectedColumns"
+                  pResizableColumn
+                  pReorderableColumn
+                  [pSortableColumn]="col.dataMap"
+                >
+                  <div class="top-header">
+                    {{ col.header }}
+                    <p-columnFilter
+                      [type]="col.type"
+                      [field]="col.dataMap"
+                      display="menu"
+                    ></p-columnFilter>
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                  </div>
+                </th>
+                <th></th>
+              </tr>
+            </ng-template>
+
+            <ng-template
+              pTemplate="body"
+              let-item
+              let-columns="selectedColumns"
+              let-index="rowIndex"
+            >
+              <tr [pSelectableRow]="item" [pReorderableRow]="index">
+                <!-- <td>
+                  <p-tableCheckbox
+                    [inputId]="'checkBox-' + item.id"
+                    [value]="item"
+                  ></p-tableCheckbox>
+                </td> -->
+
+                <td
+                  *ngFor="let col of selectedColumns"
+                  [pEditableColumn]="col.type == 'boolean'"
+                >
+                  <div
+                    *ngIf="
+                      col.field !== 'ativo';
+                      then thenBlock;
+                      else elseBlock
+                    "
+                  ></div>
+
+                  <ng-template #thenBlock>
+                    <div
+                      [innerHTML]="
+                        item | getData : col.dataMap | bindField : col
+                      "
+                    ></div>
+                  </ng-template>
+
+                  <ng-template #elseBlock>
+                    <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <input
+                          pInputCheckbox
+                          type="checkbox"
+                          id="campo_entidadeAtivo"
+                          name="campo_entidadeAtivo"
+                          [(ngModel)]="item.ativo"
+                          (change)="onBlur(item.id)"
+                        />
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        <div
+                          [innerHTML]="
+                            item | getData : col.dataMap | bindField : col
+                          "
+                        ></div>
+                        <i
+                          *ngIf="col.type == 'boolean'"
+                          class="pi"
+                          [ngClass]="{
+                            'true-icon pi-check-circle': item.ativo,
+                            'text-success': item.ativo,
+                            'false-icon pi-times-circle': !item.ativo,
+                            'text-danger': !item.ativo
+                          }"
+                        ></i>
+                      </ng-template>
+                    </p-cellEditor>
+                  </ng-template>
+                </td>
+
+                <td>
+                  <div
+                    id="opcoes"
+                    class="d-flex flex-nowrap justify-content-end"
+                  >
+                    <button
+                      type="button"
+                      class="btn text-primary m-1 top-btn"
+                      tooltipPosition="top"
+                      pTooltip="Editar"
+                      [routerLink]="['editar', item.id]"
+                    >
+                      <i class="fa-solid fa-edit fa-lg"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn text-primary m-1 top-btn"
+                      tooltipPosition="top"
+                      pTooltip="Excluir"
+                      [disabled]="excluindo"
+                      (click)="confirmarExclusao(item)"
+                    >
+                      <i class="fa-solid fa-trash fa-lg"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td></td>
+                <td [attr.colspan]="numCols">
+                  <span>Nenhum registro foi encontrado</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

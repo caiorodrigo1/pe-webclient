@@ -1,0 +1,444 @@
+<form
+  name="editForm"
+  class="formulario"
+  role="form"
+  novalidate
+  [formGroup]="editForm"
+>
+  <section class="row">
+    <div class="col-md-11 d-flex flex-column">
+      <label for="campo_assunto" class="label-campo">
+        <strong>Assunto do Processo:</strong
+        ><span class="text-danger">*</span></label
+      >
+      <div class="p-input-icon-right">
+        <p-dropdown
+          inputId="campo_assunto"
+          name="assunto"
+          formControlName="assunto"
+          [options]="assuntosProcesso"
+          placeholder="Selecione o assunto de processo"
+          [filter]="true"
+          filterBy="nome"
+          filterPlaceholder="Procurar assunto de Processo"
+          emptyFilterMessage="Nenhum resultado encontrado"
+          dataKey="id"
+          (ngModelChange)="dadosForamModificados()"
+          [class.ng-invalid]="editForm.get('assunto')!.invalid"
+          [class.ng-dirty]="editForm.get('assunto')!.touched"
+        >
+          <ng-template let-item pTemplate="selectedItem">
+            {{ item.nome }}
+          </ng-template>
+          <ng-template let-item pTemplate="item">
+            {{ item.nome }}
+          </ng-template>
+        </p-dropdown>
+        <i
+          *ngIf="editForm.get('assunto')!.errors?.['required'] && editForm.get('assunto')!.touched"
+          id="filtroIcone"
+          class="pi pi-exclamation-circle text-danger"
+        ></i>
+      </div>
+      <small
+        *ngIf="editForm.get('assunto')!.errors?.['required'] && editForm.get('assunto')!.touched"
+        class="p-error block"
+        >Definir o assunto de Processo é obrigatório</small
+      >
+    </div>
+
+    <div class="col-md-1" style="padding: 0; align-self: flex-end">
+      <button
+        (click)="criarAssunto_Processo()"
+        class="btn btn-primary"
+        pTooltip="Criar Assunto de Processo"
+        tooltipPosition="top"
+        style="border-radius: 20px; padding: 10px; display: flex; border: none"
+      >
+        <i class="pi pi-plus"></i>
+      </button>
+    </div>
+  </section>
+
+  <section class="row">
+    <div class="col-md-11 d-flex flex-column">
+      <label for="campo_tipo" class="label-campo">
+        <strong>Tipo do Processo:</strong><span class="text-danger">*</span>
+      </label>
+      <div class="p-input-icon-right">
+        <p-dropdown
+          inputId="campo_tipo"
+          name="tipo"
+          formControlName="tipo"
+          [options]="tiposProcesso"
+          placeholder="Selecione o tipo de processo"
+          [filter]="true"
+          filterBy="nome"
+          filterPlaceholder="Procurar Tipo de Processo"
+          emptyFilterMessage="Nenhum resultado encontrado"
+          dataKey="id"
+          (ngModelChange)="
+            onChangeTipoProcesso($event); dadosForamModificados()
+          "
+          [class.ng-invalid]="editForm.get('tipo')!.invalid"
+          [class.ng-dirty]="editForm.get('tipo')!.touched"
+        >
+          <ng-template let-item pTemplate="selectedItem">
+            {{ item.nome }}
+          </ng-template>
+          <ng-template let-item pTemplate="item">
+            {{ item.nome }}
+          </ng-template>
+        </p-dropdown>
+        <i
+          *ngIf="editForm.get('tipo')!.errors?.['required'] && editForm.get('tipo')!.touched"
+          id="filtroIcone"
+          class="pi pi-exclamation-circle text-danger"
+        ></i>
+      </div>
+      <small
+        *ngIf="editForm.get('tipo')!.errors?.['required'] && editForm.get('tipo')!.touched"
+        class="p-error block"
+        >Definir o Tipo de Processo é obrigatório</small
+      >
+    </div>
+
+    <div class="col-md-1" style="padding: 0; align-self: flex-end">
+      <button
+        (click)="criarTipo_Processo()"
+        class="btn btn-primary"
+        pTooltip="Criar Tipo de Processo"
+        tooltipPosition="top"
+        style="border-radius: 20px; padding: 10px; display: flex; border: none"
+      >
+        <i class="pi pi-plus"></i>
+      </button>
+    </div>
+  </section>
+
+  <section class="row" [class.d-none]="!mostraModoTramitacao">
+    <div class="col-md-12">
+      <label for="opcao-sim" class="label-campo">
+        <strong>Tramita Para Mais de um Setor:</strong>
+        <span class="text-danger">*</span></label
+      >
+      <div
+        style="
+          border: 1px solid #ced4da;
+          padding: 5px 10px;
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+        "
+      >
+        <div class="mx-3 my-2">
+          <p-radioButton
+            name="tramitaMultSetor"
+            formControlName="tramitaMultSetor"
+            value="sim"
+            inputId="opcao-sim"
+          ></p-radioButton>
+          <label for="opcao-sim" class="mx-2"> Sim </label>
+        </div>
+
+        <div class="mx-3 my-2">
+          <p-radioButton
+            name="tramitaMultSetor"
+            formControlName="tramitaMultSetor"
+            value="nao"
+            inputId="opcao-nao"
+          ></p-radioButton>
+          <label for="opcao-nao" class="mx-2"> Não </label>
+        </div>
+      </div>
+    </div>
+    <small
+      *ngIf="editForm.get('tramitaMultSetor')!.errors?.['required'] && editForm.get('tramitaMultSetor')!.touched"
+      class="p-error block"
+      >Este campo é obrigatório</small
+    >
+  </section>
+
+  <section class="row" *ngIf="templatesProcesso.length > 1">
+    <div class="col-md-12 d-flex flex-column">
+      <label for="campo_template" class="label-campo">
+        <strong>Template do Processo:</strong></label
+      >
+      <div class="p-input-icon-right">
+        <p-dropdown
+          inputId="campo_template"
+          name="template"
+          formControlName="template"
+          [options]="templatesProcesso"
+          placeholder="Escolha um dos templates do tipo de processo"
+          dataKey="id"
+          (ngModelChange)="onChangeTemplateProcesso($event)"
+        >
+          <ng-template let-item pTemplate="selectedItem">
+            {{ item.nome }}
+          </ng-template>
+          <ng-template let-item pTemplate="item">
+            {{ item.nome }}
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </div>
+  </section>
+
+  <section class="row">
+    <label class="label-campo">
+      <strong>Descrição:</strong> <span class="text-danger">*</span></label
+    >
+    <div
+      class="ckeditor p-float-label col-md-12"
+      [ngClass]="{
+        invalido:
+          editForm.get('descricao')!.invalid &&
+          editForm.get('descricao')!.touched
+      }"
+    >
+      <ckeditor
+        id="campo_descricao"
+        name="descricao"
+        formControlName="descricao"
+        [editor]="Editor"
+        [config]="editorConfig"
+        (ready)="onReady($event)"
+        (ngModelChange)="dadosForamModificados()"
+      ></ckeditor>
+      <i
+        *ngIf="
+          editForm.get('descricao')!.invalid &&
+          editForm.get('descricao')!.touched
+        "
+        class="pi pi-exclamation-circle text-danger ckeditor-exclamacao-icone"
+      ></i>
+    </div>
+    <small
+      *ngIf="editForm.get('descricao')!.errors?.['required'] && editForm.get('descricao')!.touched"
+      class="p-error block"
+      >O campo descrição é obrigatório</small
+    >
+    <small
+      *ngIf="editForm.get('descricao')!.errors?.['minlength'] && editForm.get('descricao')!.touched"
+      class="p-error block"
+      >Este campo deve ter pelo menos 2 caracteres</small
+    >
+    <small
+      *ngIf="editForm.get('descricao')!.errors?.['maxlength']"
+      class="p-error block"
+      >Este campo não pode ter mais de 5000 caracteres.</small
+    >
+  </section>
+
+  <section class="card my-3">
+    <div class="card-header bg-primary text-white">
+      <h5 class="m-0">Natureza do Processo</h5>
+    </div>
+    <div class="card-body">
+      <div>
+        <p-radioButton
+          inputId="campo_Interno"
+          name="naturezaProcesso"
+          formControlName="naturezaProcesso"
+          value="INTERNO"
+          label="Interno"
+          styleClass="p-checkbox-label"
+          (ngModelChange)="
+            onChangeNaturezaProcesso(false); dadosForamModificados()
+          "
+        ></p-radioButton>
+        <p-radioButton
+          inputId="campo_Externo"
+          name="naturezaProcesso"
+          formControlName="naturezaProcesso"
+          value="EXTERNO"
+          label="Externo"
+          styleClass="p-checkbox-label"
+          (ngModelChange)="
+            onChangeNaturezaProcesso(true); dadosForamModificados()
+          "
+        ></p-radioButton>
+      </div>
+
+      <div *ngIf="mostrarOpcoesNatureza" class="row">
+        <section class="col-md-8">
+          <label for="campo_numeroOriginal" class="label-campo">
+            Número Original:</label
+          >
+          <div class="p-input-icon-right w-100">
+            <input
+              pInputText
+              id="campo_numeroOriginal"
+              name="numeroOriginal"
+              formControlName="numeroOriginal"
+              type="text"
+              maxlength="50"
+              (ngModelChange)="dadosForamModificados()"
+              class="p-inputtext-sm"
+              [class.ng-invalid]="editForm.get('numeroOriginal')!.invalid"
+              [class.ng-dirty]="editForm.get('numeroOriginal')!.touched"
+            />
+            <i
+              id="areaTextoIcone"
+              *ngIf="
+                editForm.get('numeroOriginal')!.invalid &&
+                editForm.get('numeroOriginal')!.touched
+              "
+              class="pi pi-exclamation-circle text-danger"
+            ></i>
+          </div>
+          <small
+            *ngIf="editForm.get('numeroOriginal')!.errors?.['required'] && editForm.get('numeroOriginal')!.touched"
+            class="p-error block"
+            >O campo Número Original é obrigatório</small
+          >
+          <small
+            *ngIf="editForm.get('numeroOriginal')!.errors?.['minlength'] && editForm.get('numeroOriginal')!.touched"
+            class="p-error block"
+            >Este campo deve ter pelo menos 2 caracteres</small
+          >
+          <small
+            *ngIf="editForm.get('numeroOriginal')!.errors?.['maxlength']"
+            class="p-error block"
+            >Este campo não pode ter mais de 50 caracteres.</small
+          >
+        </section>
+
+        <section class="col-md-4">
+          <label for="campo_dataAutuacao" class="label-campo"
+            >Data de Autuação</label
+          >
+          <div class="p-input-icon-right w-100">
+            <p-calendar
+              inputId="campo_dataAutuacao"
+              name="dataAutuacao"
+              formControlName="dataAutuacao"
+              [showIcon]="true"
+              dateFormat="dd/mm/yy"
+              placeholder="dd/mm/aaaa"
+              [showButtonBar]="true"
+              [maxDate]="hoje"
+              (ngModelChange)="dadosForamModificados()"
+              [class.ng-invalid]="editForm.get('dataAutuacao')!.invalid"
+              [class.ng-dirty]="editForm.get('dataAutuacao')!.touched"
+            ></p-calendar>
+            <i
+              id="dataIcone"
+              *ngIf="
+                editForm.get('dataAutuacao')!.invalid &&
+                editForm.get('dataAutuacao')!.touched
+              "
+              class="pi pi-exclamation-circle text-danger"
+            ></i>
+            <small
+              *ngIf="
+                editForm.get('dataAutuacao')!.invalid &&
+                editForm.get('dataAutuacao')!.touched
+              "
+              class="p-error block"
+              >A Data é inválida</small
+            >
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="card my-3">
+    <div class="card-header bg-primary text-white">
+      <h5 class="m-0">Nível de Acesso</h5>
+    </div>
+    <div class="card-body">
+      <div>
+        <p-radioButton
+          inputId="campo_Publico"
+          name="nivelAcesso"
+          formControlName="nivelAcesso"
+          value="PUBLICO"
+          label="Público"
+          styleClass="p-checkbox-label"
+          (ngModelChange)="onChangeNivelAcesso(false); dadosForamModificados()"
+        ></p-radioButton>
+        <p-radioButton
+          inputId="campo_Restrito"
+          name="nivelAcesso"
+          formControlName="nivelAcesso"
+          value="RESTRITO"
+          label="Restrito ao setor"
+          styleClass="p-checkbox-label"
+          (ngModelChange)="onChangeNivelAcesso(true); dadosForamModificados()"
+        ></p-radioButton>
+        <p-radioButton
+          inputId="campo_Sigiloso"
+          name="nivelAcesso"
+          formControlName="nivelAcesso"
+          value="SIGILOSO"
+          label="Sigiloso"
+          styleClass="p-checkbox-label"
+          (ngModelChange)="onChangeNivelAcesso(true); dadosForamModificados()"
+        ></p-radioButton>
+      </div>
+
+      <div class="row" *ngIf="mostrarOpcoesNivelAcesso">
+        <div class="col-md-11 d-flex flex-column">
+          <label for="campo_hipoteseLegal" class="label-campo">
+            <strong>Hipotese Legal (LGPD):</strong></label
+          >
+          <div class="p-input-icon-right">
+            <p-dropdown
+              dataKey="id"
+              inputId="campo_hipoteseLegal"
+              name="hipoteseLegal"
+              formControlName="hipoteseLegal"
+              [options]="hipotesesLegais"
+              placeholder="Selecione a Hipótese Legal (LGPD)"
+              [filter]="true"
+              filterBy="descricao"
+              filterPlaceholder="Procurar Hipótese Legal (LGPD)"
+              emptyFilterMessage="Nenhum resultado encontrado"
+              (ngModelChange)="dadosForamModificados()"
+              [class.ng-invalid]="editForm.get('hipoteseLegal')!.invalid"
+              [class.ng-dirty]="editForm.get('hipoteseLegal')!.touched"
+            >
+              <ng-template let-item pTemplate="selectedItem">
+                {{ item.descricao }}
+              </ng-template>
+              <ng-template let-item pTemplate="item">
+                {{ item.descricao }}
+              </ng-template>
+            </p-dropdown>
+            <i
+              *ngIf="editForm.get('hipoteseLegal')!.errors?.['required'] && editForm.get('hipoteseLegal')!.touched"
+              id="filtroIcone"
+              class="pi pi-exclamation-circle text-danger"
+            ></i>
+          </div>
+
+          <small
+            *ngIf="editForm.get('hipoteseLegal')!.errors?.['required'] && editForm.get('hipoteseLegal')!.touched"
+            class="p-error block"
+            >Definir a Hipótese Legal (LGPD) é obrigatória</small
+          >
+        </div>
+
+        <div class="col-md-1" style="padding: 0; align-self: flex-end">
+          <button
+            (click)="criarHipoteseLegal()"
+            class="btn btn-primary"
+            pTooltip="Criar Hipótese Legal (LGPD)"
+            tooltipPosition="bottom"
+            style="
+              border-radius: 20px;
+              padding: 10px;
+              display: flex;
+              border: none;
+            "
+          >
+            <i class="pi pi-plus"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</form>

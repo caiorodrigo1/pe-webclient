@@ -1,0 +1,34 @@
+<p-toast
+  position="top-right"
+  key="main"
+  styleClass="toast-customizado toast-main"
+  hideTransformOptions="translateX(100%)"
+>
+</p-toast>
+
+<div
+  id="app"
+  class="app app-header-fixed app-sidebar-fixed app-content-full-height"
+>
+  <top-header
+    [usuario]="usuarioLogado"
+    (alternarClicado)="alternarMenu()"
+  ></top-header>
+  <top-sidebar
+    [usuario]="usuarioLogado"
+    (alternarClicado)="alternarMenu()"
+  ></top-sidebar>
+
+  <section id="content" class="app-content d-flex flex-column p-0">
+    <div
+      class="app-content-padding flex-grow-1"
+      data-scrollbar="true"
+      data-height="100%"
+    >
+      <router-outlet></router-outlet>
+    </div>
+    <div id="footer">
+      <top-footer></top-footer>
+    </div>
+  </section>
+</div>

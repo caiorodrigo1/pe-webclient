@@ -1,0 +1,55 @@
+<main class="formulario modal-body mt-3">
+  <section class="row">
+    <div class="col-md-11">
+      <div class="p-float-label" style="margin-top: 20px">
+        <p-dropdown
+          [options]="listaOrgao"
+          [(ngModel)]="orgaoSelected"
+          optionLabel="sigla"
+          placeholder="Selecione o Órgão"
+          inputId="float-label"
+          [filter]="true"
+          filterBy="nome"
+          filterPlaceholder="Procurar Orgão"
+          emptyFilterMessage="Nenhum resultado encontrado"
+          dataKey="id"
+          (ngModelChange)="onChangeOrgao($event)"
+        ></p-dropdown>
+        <label for="float-label" style="font-size: 12px"
+          >Selecione o Orgão</label
+        >
+      </div>
+
+      <div class="p-float-label" style="margin-top: 30px">
+        <p-multiSelect
+          [options]="listaUsuarios"
+          [(ngModel)]="usuariosSignatario"
+          optionLabel="nome"
+          placeholder="Selecione o Signatário"
+          inputId="float-label"
+          [filter]="true"
+          filterBy="nome"
+          filterPlaceholder="Procurar Signatário"
+          emptyFilterMessage="Nenhum resultado encontrado"
+          dataKey="id"
+          [disabled]="orgaoIndefinido"
+        ></p-multiSelect>
+        <label for="float-label" style="font-size: 12px"
+          >Selecione o Signatário</label
+        >
+      </div>
+    </div>
+  </section>
+
+  <hr />
+
+  <footer class="d-flex justify-content-end">
+    <button
+      class="btn btn-primary"
+      (click)="adicionarSignatario()"
+      [disabled]="!usuariosSignatario"
+    >
+      Adicionar
+    </button>
+  </footer>
+</main>

@@ -1,0 +1,248 @@
+<top-cabecalho
+  [itens]="[recipiente, acao]"
+  [recipiente]="acao + ' ' + recipiente"
+  [entidade]="recipiente"
+></top-cabecalho>
+
+<main class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header bg-primary p-1"></div>
+
+      <div class="card-body" *ngIf="!carregando">
+        <form
+          class="formulario"
+          name="editForm"
+          role="form"
+          novalidate
+          (ngSubmit)="salvar()"
+          [formGroup]="editForm"
+        >
+          <section *ngIf="acao === 'Criar'" class="row">
+            <div class="col-md-6 d-flex flex-column">
+              <label for="campo_orgao" class="label-campo">
+                <strong>Órgão:</strong>
+                <span class="text-danger">*</span>
+              </label>
+
+              <div class="p-input-icon-right">
+                <p-dropdown
+                  inputId="campo_orgao"
+                  name="orgao"
+                  formControlName="orgao"
+                  [options]="orgaos"
+                  placeholder="Selecione o Órgao"
+                  [filter]="true"
+                  filterBy="sigla"
+                  filterPlaceholder="Procurar Órgão"
+                  emptyFilterMessage="Nenhum resultado encontrado"
+                  dataKey="id"
+                  (onChange)="onChangeOrgao($event.value.id)"
+                  [class.ng-invalid]="editForm.get('orgao')!.invalid"
+                  [class.ng-dirty]="editForm.get('orgao')!.touched"
+                >
+                  <ng-template let-item pTemplate="selectedItem">
+                    {{ item.sigla }}
+                  </ng-template>
+                  <ng-template let-item pTemplate="item">
+                    {{ item.sigla }}
+                  </ng-template>
+                </p-dropdown>
+                <i
+                  *ngIf="editForm.get('orgao')!.errors?.['required'] && editForm.get('orgao')!.touched"
+                  id="filtroIcone"
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('orgao')!.errors?.['required'] && editForm.get('orgao')!.touched"
+                class="p-error block"
+                >Este campo é obrigatório</small
+              >
+            </div>
+
+            <div class="col-md-6 d-flex flex-column">
+              <label for="campo_setor" class="label-campo">
+                <strong>Setor:</strong>
+                <span class="text-danger">*</span>
+              </label>
+
+              <div class="p-input-icon-right">
+                <p-dropdown
+                  inputId="campo_setor"
+                  name="setor"
+                  formControlName="setor"
+                  [options]="setores"
+                  placeholder="Selecione o Setor"
+                  [filter]="true"
+                  filterBy="sigla"
+                  filterPlaceholder="Procurar Setor"
+                  emptyFilterMessage="Nenhum resultado encontrado"
+                  dataKey="id"
+                  [class.ng-invalid]="editForm.get('setor')!.invalid"
+                  [class.ng-dirty]="editForm.get('setor')!.touched"
+                >
+                  <ng-template let-item pTemplate="selectedItem">
+                    {{ item.sigla }}
+                  </ng-template>
+                  <ng-template let-item pTemplate="item">
+                    {{ item.sigla }}
+                  </ng-template>
+                </p-dropdown>
+                <i
+                  *ngIf="editForm.get('setor')!.errors?.['required'] && editForm.get('setor')!.touched"
+                  id="filtroIcone"
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('setor')!.errors?.['required'] && editForm.get('setor')!.touched"
+                class="p-error block"
+                >Este campo é obrigatório</small
+              >
+            </div>
+          </section>
+
+          <section class="row">
+            <div *ngIf="acao === 'Criar'" class="col-md-6 d-flex flex-column">
+              <label for="campo_usuario" class="label-campo">
+                <strong>Usuário:</strong>
+                <span class="text-danger">*</span>
+              </label>
+
+              <div class="p-input-icon-right">
+                <p-dropdown
+                  inputId="campo_usuario"
+                  name="usuario"
+                  formControlName="usuario"
+                  [options]="usuarios"
+                  placeholder="Selecione o Usuário"
+                  [filter]="true"
+                  filterBy="usuario"
+                  filterPlaceholder="Procurar Usuário"
+                  emptyFilterMessage="Nenhum resultado encontrado"
+                  dataKey="id"
+                  [class.ng-invalid]="editForm.get('usuario')!.invalid"
+                  [class.ng-dirty]="editForm.get('usuario')!.touched"
+                >
+                  <ng-template let-item pTemplate="selectedItem">
+                    {{ item.nome }}
+                  </ng-template>
+                  <ng-template let-item pTemplate="item">
+                    {{ item.nome }}
+                  </ng-template>
+                </p-dropdown>
+                <i
+                  *ngIf="editForm.get('usuario')!.errors?.['required'] && editForm.get('usuario')!.touched"
+                  id="filtroIcone"
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('usuario')!.errors?.['required'] && editForm.get('usuario')!.touched"
+                class="p-error block"
+                >Este campo é obrigatório</small
+              >
+            </div>
+
+            <div class="col-md-6 d-flex flex-column">
+              <label for="campo_papel" class="label-campo">
+                <strong>Papel Usuário:</strong>
+                <span class="text-danger">*</span>
+              </label>
+
+              <div class="p-input-icon-right">
+                <p-dropdown
+                  inputId="campo_papel"
+                  name="papel"
+                  formControlName="papel"
+                  [options]="papeisUsuarios"
+                  placeholder="Selecione o Papel do Usuário"
+                  [filter]="true"
+                  filterBy="nome"
+                  filterPlaceholder="Procurar Papel do Usuario"
+                  emptyFilterMessage="Nenhum resultado encontrado"
+                  dataKey="id"
+                  [class.ng-invalid]="editForm.get('papel')!.invalid"
+                  [class.ng-dirty]="editForm.get('papel')!.touched"
+                >
+                  <ng-template let-item pTemplate="selectedItem">
+                    {{ item.nome }}
+                  </ng-template>
+                  <ng-template let-item pTemplate="item">
+                    {{ item.nome }}
+                  </ng-template>
+                </p-dropdown>
+                <i
+                  *ngIf="editForm.get('papel')!.errors?.['required'] && editForm.get('papel')!.touched"
+                  id="filtroIcone"
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('papel')!.errors?.['required'] && editForm.get('papel')!.touched"
+                class="p-error block"
+                >Este campo é obrigatório</small
+              >
+            </div>
+          </section>
+
+          <section class="row">
+            <div class="col-md-12">
+              <label
+                class="form-check-label label-campo"
+                for="campo_usuarioCoordenador"
+              >
+                <strong>Usuário Coordenador:</strong>
+              </label>
+              <div>
+                <p-inputSwitch
+                  inputId="campo_usuarioCoordenador"
+                  name="usuarioCoordenador"
+                  formControlName="usuarioCoordenador"
+                ></p-inputSwitch>
+              </div>
+            </div>
+          </section>
+
+          <section class="row">
+            <div class="col-md-12">
+              <label class="form-check-label label-campo" for="campo_ativo">
+                <strong>Ativo:</strong>
+              </label>
+              <div>
+                <p-inputSwitch
+                  inputId="campo_ativo"
+                  name="ativo"
+                  formControlName="ativo"
+                ></p-inputSwitch>
+              </div>
+            </div>
+          </section>
+        </form>
+      </div>
+
+      <div class="card-footer bg-white text-end">
+        <button
+          id="bto-voltar"
+          type="button"
+          class="btn btn-white fa-lg me-2"
+          (click)="cancelar()"
+        >
+          <i class="fa fa-arrow-left fa-lg me-2"></i>
+          Voltar
+        </button>
+        <button
+          id="bto-salvar"
+          type="submit"
+          (click)="salvar()"
+          class="btn btn-primary me-2"
+          [disabled]="editForm.invalid || salvando"
+        >
+          <i class="fa fa-save fa-lg me-2"></i>
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

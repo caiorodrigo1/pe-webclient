@@ -1,0 +1,228 @@
+<top-cabecalho
+  [itens]="[entidade, 'Lista']"
+  [recipiente]="recipiente"
+  [entidade]="entidade"
+></top-cabecalho>
+
+<main class="row">
+  <section class="col-xl-12">
+    <!--TAB-NAVS-->
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a
+          #tab_1
+          id="tab1"
+          [href]="tabelas[0]"
+          (click)="mudarTabela(tabelas[0])"
+          data-bs-toggle="tab"
+          class="nav-link"
+          ><h5 class="d-sm-none">Recebidas</h5>
+          <h5 class="d-sm-block d-none">Assinaturas Recebidas</h5>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a
+          #tab_2
+          id="tab2"
+          [href]="tabelas[1]"
+          (click)="mudarTabela(tabelas[1])"
+          data-bs-toggle="tab"
+          class="nav-link"
+          ><h5 class="d-sm-none">Enviadas</h5>
+          <h5 class="d-sm-block d-none">Assinaturas Enviadas</h5>
+        </a>
+      </li>
+    </ul>
+
+    <!--TABELAS-->
+    <section class="tab-content panel rounded-0 p-4">
+      <div id="entidades" class="tab-content p-0">
+        <div class="tab-pane fade show active">
+          <p-table
+            id="tabela"
+            #tabela_1
+            [value]="assinaturas"
+            styleClass="p-datatable-striped"
+            responsiveLayout="stack"
+            [breakpoint]="'960px'"
+            [selectionPageOnly]="true"
+            dataKey="id"
+            [(selection)]="selecionados"
+            [rowSelectable]="linhaSelecionavel"
+            [globalFilterFields]="globalFilterFields()"
+            [resizableColumns]="true"
+            [columns]="selectedColumns"
+            [reorderableColumns]="true"
+            columnResizeMode="fit"
+            [loading]="verificarCarregamento()"
+            [lazy]="false"
+            (onLazyLoad)="lazyLoad($event)"
+            [scrollable]="true"
+            scrollHeight="470px"
+          >
+            <ng-template pTemplate="caption">
+              <div class="d-flex justify-content-between align-items-center">
+                <p-multiSelect
+                  inputId="multiSelect"
+                  [options]="cols"
+                  [(ngModel)]="selectedColumns"
+                  optionLabel="header"
+                  selectedItemsLabel="{0} colunas selecionadas"
+                  [style]="{ 'min-width': '200px' }"
+                  placeholder="Selecionar colunas"
+                  class="selectColumns mx-2"
+                >
+                </p-multiSelect>
+                <div
+                  class="d-flex justify-content-between align-items-center w-100"
+                >
+                  <span class="p-input-icon-left globalSearch w-100">
+                    <i class="pi pi-search p-input-icon-top"></i>
+                    <input
+                      inputId="globalFilter"
+                      [(ngModel)]="globalFilter"
+                      pInputText
+                      type="text"
+                      (input)="
+                        tabela_1.filterGlobal(
+                          $any($event.target).value,
+                          'contains'
+                        )
+                      "
+                      [placeholder]="'Pesquisar ' + recipiente"
+                      class="w-100"
+                    />
+                  </span>
+
+                  <button
+                    pButton
+                    title="Limpar pesquisa"
+                    class="p-button-rounded p-button-info p-button-text"
+                    icon="pi pi-filter-slash"
+                    (click)="atualizarTela(tabela_1)"
+                  ></button>
+                </div>
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  <p-tableHeaderCheckbox
+                    inputId="checkbox"
+                  ></p-tableHeaderCheckbox>
+                </th>
+                <th
+                  *ngFor="let col of filtrarColunas()"
+                  pResizableColumn
+                  pReorderableColumn
+                  [pSortableColumn]="col.dataMap"
+                >
+                  <div class="top-header">
+                    {{ col.header }}
+                    <p-columnFilter
+                      [type]="col.type"
+                      [field]="col.dataMap"
+                      display="menu"
+                    ></p-columnFilter>
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                  </div>
+                </th>
+                <th></th>
+              </tr>
+            </ng-template>
+
+            <ng-template
+              pTemplate="body"
+              let-item
+              let-columns="selectedColumns"
+              let-index="rowIndex"
+            >
+              <tr [pSelectableRow]="item" [pReorderableRow]="index">
+                <td>
+                  <div
+                    class="btn-group d-flex justify-content-between align-items-center"
+                  >
+                    <p-tableCheckbox
+                      [inputId]="'checkBox-' + item.tipo + item.pecaId"
+                      [value]="item"
+                    ></p-tableCheckbox>
+                    <!-- <span
+                      class="pi pi-list"
+                      [pReorderableRowHandle]="index"
+                    ></span> -->
+                  </div>
+                </td>
+                <td *ngFor="let col of filtrarColunas()">
+                  <div
+                    [innerHTML]="item | getData : col.dataMap | bindField : col"
+                  ></div>
+                </td>
+                <td>
+                  <div id="processoOpcoes" class="d-flex flex-nowrap">
+                    <button
+                      *ngIf="this.tabelaAtual === tabelas[0]"
+                      type="button"
+                      class="btn text-primary mx-1 top-btn"
+                      tooltipPosition="top"
+                      pTooltip="Assinar Documento"
+                      (click)="mudarStatus(item, 'ASSINAR')"
+                    >
+                      <i class="fa-solid fa-file-edit fa-lg"></i>
+                    </button>
+                    <button
+                      *ngIf="this.tabelaAtual === tabelas[0]"
+                      type="button"
+                      class="btn text-primary mx-1 top-btn"
+                      tooltipPosition="top"
+                      pTooltip="Rejeitar Documento"
+                      (click)="mudarStatus(item, 'REJEITAR')"
+                    >
+                      <i class="fa-solid fa-times-circle fa-lg"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn text-primary mx-1 top-btn"
+                      tooltipPosition="top"
+                      pTooltip="Visualizar Documento"
+                      (click)="visualizarItem(item)"
+                    >
+                      <i class="fa-solid fa-info-circle fa-lg"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn text-primary mx-1 top-btn"
+                      tooltipPosition="top"
+                      pTooltip="Baixar Documento"
+                      (click)="baixarDocumento(item)"
+                    >
+                      <i class="fa-solid fa-download fa-lg"></i>
+                    </button>
+                    <!-- <p-splitButton
+                      #split
+                      label="Opções"
+                      appendTo="body"
+                      (onClick)="split.onDropdownButtonClick($event)"
+                      (onDropdownClick)="selecionarItem(item)"
+                      [model]="getOpcoesPorTabela()"
+                    >
+                    </p-splitButton> -->
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td></td>
+                <td [attr.colspan]="numCols">
+                  <span>Nenhum registro foi encontrado</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>

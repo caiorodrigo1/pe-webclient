@@ -1,0 +1,22 @@
+<main>
+  <h5 *ngIf="documentos.length >= 1" style="text-align: center; margin: 5px 0">
+    Selecione o Documento para o Desmembramento
+  </h5>
+
+  <h5 *ngIf="documentos.length < 1" style="text-align: center; margin: 5px 0">
+    Processo Não Possui Documentos Para Realizar o Desmembramento
+  </h5>
+
+  <section style="margin: 10px">
+    <div *ngFor="let item of documentos" style="display: flex; margin: 5px 0">
+      <button
+        [disabled]="desmembrando"
+        class="btn btn-primary w-100"
+        (click)="confirmar(item.id!)"
+      >
+        <i class="fa fa-file fa-lg me-2 ms-n2"></i
+        ><strong>{{ item.assunto }}</strong> - {{ item.tipoDocumento!.nome }}
+      </button>
+    </div>
+  </section>
+</main>

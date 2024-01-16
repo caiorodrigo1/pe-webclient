@@ -1,0 +1,215 @@
+<top-cabecalho
+  [itens]="[recipiente, 'Criar']"
+  [recipiente]="'Novo ' + recipiente"
+  [entidade]="recipiente"
+></top-cabecalho>
+
+<p-confirmDialog></p-confirmDialog>
+
+<main class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header bg-primary p-1"></div>
+
+      <div class="card-body">
+        <div
+          class="accordion accordion-flush"
+          id="accordionPanelsStayOpenExample"
+        >
+          <!--INFORMAÇÕES GERAIS-->
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button
+                id="panelb-infoGeral"
+                class="accordion-button collapsed bg-white"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panel-infoGeral"
+                aria-expanded="false"
+                aria-controls="panel-infoGeral"
+              >
+                <h3 class="m-0">1. Informações gerais</h3>
+              </button>
+            </h2>
+            <div id="panel-infoGeral" class="accordion-collapse collapse">
+              <div class="accordion-body bg-white pt-0">
+                <!--CONTENT-->
+                <div>
+                  <top-processo-geral
+                    [processo]="processo"
+                    [editForm]="editFormGeral"
+                    [edicao]="etapa"
+                    [variaveis]="variaveis"
+                    (dadosModificados)="informarMudancaFormGeral($event)"
+                  ></top-processo-geral>
+                  <p class="text-end mb-0 mt-4">
+                    <button
+                      *ngIf="etapa === 0"
+                      id="bto-salvar-rascunho_0"
+                      (click)="salvarInfoGeral(true)"
+                      class="btn btn-primary me-2"
+                      [disabled]="!editFormGeral.valid || salvando"
+                    >
+                      <i class="fa fa-save fa-lg me-2"></i>Salvar Rascunho
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--DOCUMENTOS-->
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button
+                id="panelb-documentos"
+                class="accordion-button collapsed bg-white"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panel-documentos"
+                aria-expanded="false"
+                aria-controls="panel-documentos"
+                [disabled]="etapa < 1"
+              >
+                <h3 class="m-0" [class.desabilitado]="etapa < 1">
+                  2. Documentos
+                </h3>
+              </button>
+            </h2>
+            <div id="panel-documentos" class="accordion-collapse collapse">
+              <div class="accordion-body bg-white pt-0">
+                <!--CONTENT-->
+                <div>
+                  <top-processo-documento
+                    [processo]="processo"
+                    [editForm]="editFormDocumento"
+                    [numeroDocumento]="quantidadeDocumentos"
+                    [documentosAdicionados]="documentos"
+                    [variaveis]="variaveis"
+                    (dadosModificados)="informarMudancaDocumentos($event)"
+                  ></top-processo-documento>
+                  <p class="text-end mb-0 mt-4">
+                    <button
+                      *ngIf="etapa === 1"
+                      id="bto-salvar-rascunho_1"
+                      (click)="salvarInfoGeral(true)"
+                      class="btn btn-primary me-2"
+                      [disabled]="
+                        !editFormGeral.valid ||
+                        documentos.length < 1 ||
+                        salvando
+                      "
+                    >
+                      <i class="fa fa-save fa-lg me-2"></i>Salvar Rascunho
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--ANEXOS-->
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button
+                id="panelb-anexos"
+                class="accordion-button collapsed bg-white"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panel-anexos"
+                aria-expanded="false"
+                aria-controls="panel-anexos"
+                [disabled]="etapa < 2"
+              >
+                <h3 class="m-0" [class.desabilitado]="etapa < 2">3. Anexos</h3>
+              </button>
+            </h2>
+            <div id="panel-anexos" class="accordion-collapse collapse">
+              <div class="accordion-body bg-white pt-0">
+                <!--CONTENT-->
+                <div>
+                  <top-processo-anexo
+                    [processo]="processo"
+                    [anexosAdicionados]="anexos"
+                    [anexosSalvos]="anexosSalvos"
+                  ></top-processo-anexo>
+                </div>
+                <p class="text-end mb-0 mt-4">
+                  <button
+                    *ngIf="etapa === 2"
+                    id="bto-salvar-rascunho_2"
+                    (click)="salvarInfoGeral(true)"
+                    class="btn btn-primary me-2"
+                    [disabled]="salvando"
+                  >
+                    <i class="fa fa-save fa-lg me-2"></i>Salvar Rascunho
+                  </button>
+                </p>
+              </div>
+            </div>
+          </div>
+          <!--INTERESSADOS-->
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button
+                id="panelb-interessados"
+                class="accordion-button collapsed bg-white"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panel-interessados"
+                aria-expanded="false"
+                aria-controls="panel-interessados"
+                [disabled]="etapa < 3"
+              >
+                <h3 class="m-0" [class.desabilitado]="etapa < 3">
+                  4. Interessados
+                </h3>
+              </button>
+            </h2>
+            <div id="panel-interessados" class="accordion-collapse collapse">
+              <div class="accordion-body bg-white pt-0">
+                <!--CONTENT-->
+                <div>
+                  <top-processo-interessado
+                    [processo]="processo"
+                    [interessadosAdicionados]="interessados"
+                    [interessadosSalvos]="interessadosSalvos"
+                  ></top-processo-interessado>
+                  <p class="text-end mb-0 mt-4">
+                    <button
+                      id="bto-salvar-rascunho_3"
+                      (click)="salvarInfoGeral(true)"
+                      class="btn btn-primary me-2"
+                      [disabled]="salvando"
+                    >
+                      <i class="fa fa-save fa-lg me-2"></i>Salvar Rascunho
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--FOOTER-->
+          <div class="accordion-body bg-white">
+            <p class="text-end mt-2 mb-0">
+              <button
+                id="bto-voltar"
+                (click)="cancelar()"
+                class="btn btn-white me-2"
+                [disabled]="salvando"
+              >
+                <i class="fa fa-arrow-left fa-lg me-2"></i>Voltar
+              </button>
+              <button
+                id="bto-salvar-processo"
+                (click)="confirmarSalvar()"
+                class="btn btn-primary me-2"
+                [disabled]="salvando || etapa < 3"
+              >
+                <i class="fa fa-save fa-lg me-2"></i>Salvar Processo
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

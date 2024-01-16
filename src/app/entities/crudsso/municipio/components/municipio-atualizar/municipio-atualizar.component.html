@@ -1,0 +1,173 @@
+<top-cabecalho
+  [itens]="[recipiente, acao]"
+  [recipiente]="acao + ' ' + recipiente"
+  [entidade]="recipiente"
+></top-cabecalho>
+
+<main class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header bg-primary p-1"></div>
+
+      <div class="card-body" *ngIf="!carregando">
+        <form
+          class="formulario"
+          name="editForm"
+          role="form"
+          novalidate
+          (ngSubmit)="salvar()"
+          [formGroup]="editForm"
+        >
+          <section class="row">
+            <div class="col-md-12">
+              <label for="campo_nome" class="label-campo">
+                <strong>Nome:</strong> <span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <input
+                  pInputText
+                  id="campo_nome"
+                  name="nome"
+                  formControlName="nome"
+                  type="text"
+                  maxlength="500"
+                  class="p-inputtext-sm"
+                  [class.ng-invalid]="editForm.get('nome')!.invalid"
+                  [class.ng-dirty]="editForm.get('nome')!.touched"
+                />
+                <i
+                  *ngIf="
+                    editForm.get('nome')!.invalid &&
+                    editForm.get('nome')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['required'] && editForm.get('nome')!.touched"
+                class="p-error block"
+                >O campo Nome é obrigatório</small
+              >
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['minlength'] && editForm.get('nome')!.touched"
+                class="p-error block"
+                >Este campo deve ter pelo menos 2 caracteres</small
+              >
+              <small
+                *ngIf="editForm.get('nome')!.errors?.['maxlength']"
+                class="p-error block"
+                >Este campo não pode ter mais de 500 caracteres.</small
+              >
+            </div>
+          </section>
+
+          <section class="row">
+            <div class="col-md-7 d-flex flex-column">
+              <label for="campo_uf" class="label-campo">
+                <strong>UF:</strong>
+                <span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right">
+                <p-dropdown
+                  inputId="campo_uf"
+                  name="uf"
+                  formControlName="uf"
+                  [options]="ufs"
+                  placeholder="Selecione a UF do Município"
+                  [filter]="true"
+                  filterBy="valor"
+                  filterPlaceholder="Procurar UF do Município"
+                  emptyFilterMessage="Nenhum resultado encontrado"
+                  dataKey="valor"
+                  [class.ng-invalid]="editForm.get('uf')!.invalid"
+                  [class.ng-dirty]="editForm.get('uf')!.touched"
+                >
+                  <ng-template let-item pTemplate="selectedItem">
+                    {{ item.valor }}
+                  </ng-template>
+                  <ng-template let-item pTemplate="item">
+                    {{ item.valor }}
+                  </ng-template>
+                </p-dropdown>
+                <i
+                  *ngIf="editForm.get('uf')!.errors?.['required'] && editForm.get('uf')!.touched"
+                  id="filtroIcone"
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('uf')!.errors?.['required'] && editForm.get('uf')!.touched"
+                class="p-error block"
+                >Definir a uf do município é obrigatório</small
+              >
+            </div>
+
+            <div class="col-md-5">
+              <label for="campo_codigoIBGE" class="label-campo">
+                <strong>Código do IBGE:</strong>
+                <span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <input
+                  pInputText
+                  id="campo_codigoIBGE"
+                  name="codigoIBGE"
+                  formControlName="codigoIBGE"
+                  type="text"
+                  maxlength="7"
+                  class="p-inputtext-sm"
+                  [class.ng-invalid]="editForm.get('codigoIBGE')!.invalid"
+                  [class.ng-dirty]="editForm.get('codigoIBGE')!.touched"
+                />
+                <i
+                  *ngIf="
+                    editForm.get('codigoIBGE')!.invalid &&
+                    editForm.get('codigoIBGE')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('codigoIBGE')!.errors?.['required'] && editForm.get('codigoIBGE')!.touched"
+                class="p-error block"
+                >Este campo é obrigatório</small
+              >
+              <small
+                *ngIf="editForm.get('codigoIBGE')!.errors?.['minlength'] && editForm.get('codigoIBGE')!.touched"
+                class="p-error block"
+                >Este campo deve ter pelo menos 7 caracteres</small
+              >
+              <small
+                *ngIf="editForm.get('codigoIBGE')!.errors?.['maxlength']"
+                class="p-error block"
+                >Este campo não pode ter mais de 7 caracteres.</small
+              >
+            </div>
+          </section>
+        </form>
+      </div>
+
+      <div class="card-footer bg-white text-end">
+        <button
+          id="bto-voltar"
+          type="button"
+          class="btn btn-white fa-lg me-2"
+          (click)="cancelar()"
+        >
+          <i class="fa fa-arrow-left fa-lg me-2"></i>
+          Voltar
+        </button>
+        <button
+          id="bto-salvar"
+          type="submit"
+          (click)="salvar()"
+          class="btn btn-primary me-2"
+          [disabled]="editForm.invalid || salvando"
+        >
+          <i class="fa fa-save fa-lg me-2"></i>
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

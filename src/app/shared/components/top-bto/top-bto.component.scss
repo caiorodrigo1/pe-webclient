@@ -1,0 +1,51 @@
+.comum {
+  display: flex;
+  border: none;
+  background-color: transparent;
+  border-radius: 15px;
+  padding: 5px;
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.excluir {
+  color: #ef4444;
+}
+
+.excluir:hover {
+  background-color: #ff41360d;
+}
+
+.excluir:active {
+  background-color: #ff41361a;
+}
+
+.editar,
+.adicionar {
+  color: #0000ff;
+}
+
+.editar:hover,
+.adicionar:hover {
+  background-color: #0000ff0d;
+}
+
+.editar:active,
+.adicionar:active {
+  background-color: #0000ff1a;
+}
+
+.confirmar {
+  color: #008000;
+}
+
+.confirmar:hover {
+  background-color: #0080000d;
+}
+
+.confirmar:active {
+  background-color: #0080001a;
+}

@@ -1,0 +1,129 @@
+<main class="formulario modal-body mt-3">
+  <h5>
+    Escolha o processo que será juntado ao processo
+    <strong>{{ processo!.numeroProcesso | numeroProcesso }}</strong>
+  </h5>
+
+  <div
+    *ngIf="carregando || juntando"
+    class="w-100 d-flex justify-content-center"
+  >
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+
+  <main class="row" *ngIf="!carregando && !juntando">
+    <section class="col-xl-12">
+      <div class="tab-content panel rounded-0 p-0">
+        <div id="entidades" class="tab-content p-0">
+          <div class="tab-pane fade show active">
+            <p-table
+              #tabela
+              [value]="processos"
+              styleClass="p-datatable-striped"
+              responsiveLayout="stack"
+              [breakpoint]="'960px'"
+              [selectionPageOnly]="true"
+              dataKey="id"
+              [globalFilterFields]="globalFilterFields()"
+              [resizableColumns]="true"
+              [columns]="selectedColumns"
+              [reorderableColumns]="true"
+              columnResizeMode="fit"
+              [loading]="carregando"
+              [lazy]="false"
+              (onLazyLoad)="lazyLoad($event)"
+              selectionMode="single"
+              [scrollable]="true"
+              scrollHeight="470px"
+            >
+              <ng-template pTemplate="caption">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div
+                    class="d-flex justify-content-between align-items-center w-100"
+                  >
+                    <span class="p-input-icon-left globalSearch w-100">
+                      <i class="pi pi-search p-input-icon-top"></i>
+                      <input
+                        id="globalFilter"
+                        [(ngModel)]="globalFilter"
+                        pInputText
+                        type="text"
+                        (input)="
+                          tabela.filterGlobal(
+                            $any($event.target).value,
+                            'contains'
+                          )
+                        "
+                        [placeholder]="'Pesquisar ' + recipiente"
+                        class="w-100"
+                      />
+                    </span>
+
+                    <button
+                      pButton
+                      title="Limpar pesquisa"
+                      class="p-button-rounded p-button-info p-button-text"
+                      icon="pi pi-filter-slash"
+                      (click)="atualizarTela(tabela)"
+                    ></button>
+                  </div>
+                </div>
+              </ng-template>
+
+              <ng-template pTemplate="header">
+                <tr>
+                  <th
+                    *ngFor="let col of selectedColumns"
+                    pResizableColumn
+                    pReorderableColumn
+                    [pSortableColumn]="col.dataMap"
+                  >
+                    <div>
+                      {{ col.header }}
+                      <p-columnFilter
+                        [type]="col.type"
+                        [field]="col.dataMap"
+                        display="menu"
+                      ></p-columnFilter>
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </div>
+                  </th>
+                </tr>
+              </ng-template>
+
+              <ng-template
+                pTemplate="body"
+                let-item
+                let-columns="selectedColumns"
+                let-index="rowIndex"
+              >
+                <tr
+                  [pSelectableRow]="item"
+                  [pReorderableRow]="index"
+                  (click)="confirmar(item.id)"
+                >
+                  <td *ngFor="let col of selectedColumns">
+                    <div
+                      [innerHTML]="
+                        item | getData : col.dataMap | bindField : col
+                      "
+                    ></div>
+                  </td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td></td>
+                  <td [attr.colspan]="numCols">
+                    <span>Nenhum registro foi encontrado</span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</main>

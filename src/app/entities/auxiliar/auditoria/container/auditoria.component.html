@@ -1,0 +1,242 @@
+<top-cabecalho
+  [itens]="['Auditoria', 'pesquisar']"
+  [recipiente]="recipiente"
+  [entidade]="recipiente"
+></top-cabecalho>
+
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header bg-primary p-1"></div>
+
+      <div class="card-body">
+        <form
+          name="editForm"
+          class="formulario"
+          role="form"
+          novalidate
+          (ngSubmit)="pesquisar()"
+          [formGroup]="editForm"
+        >
+          <section class="row">
+            <div class="col-md-6">
+              <label for="campo_dataCriacaoInicio" class="label-campo"
+                ><strong>Data de Criação (início):</strong
+                ><span class="text-danger">*&nbsp;</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <p-calendar
+                  (onClose)="
+                    rangeDate(editForm.get('dataCriacaoInicio')!.value)
+                  "
+                  inputId="campo_dataCriacaoInicio"
+                  formControlName="dataCriacaoInicio"
+                  [showIcon]="true"
+                  dateFormat="dd/mm/yy"
+                  placeholder="dd/mm/aaaa"
+                  [showButtonBar]="true"
+                  [maxDate]="hoje"
+                  [class.ng-invalid]="
+                    editForm.get('dataCriacaoInicio')!.invalid
+                  "
+                  [class.ng-dirty]="editForm.get('dataCriacaoInicio')!.touched"
+                ></p-calendar>
+                <i
+                  id="dataIcone"
+                  *ngIf="
+                    editForm.get('dataCriacaoInicio')!.invalid &&
+                    editForm.get('dataCriacaoInicio')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+                <small
+                  *ngIf="
+                    editForm.get('dataCriacaoInicio')!.invalid &&
+                    editForm.get('dataCriacaoInicio')!.touched
+                  "
+                  class="p-error block"
+                  >Este campo é de preenchimento obrigatório.</small
+                >
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="campo_dataCriacaoFim" class="label-campo"
+                ><strong>Data de Criação (fim):</strong
+                ><span class="text-danger">*&nbsp;</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <p-calendar
+                  inputId="campo_dataCriacaoFim"
+                  formControlName="dataCriacaoFim"
+                  [showIcon]="true"
+                  dateFormat="dd/mm/yy"
+                  placeholder="dd/mm/aaaa"
+                  [showButtonBar]="true"
+                  [maxDate]="dataRange"
+                  [class.ng-invalid]="editForm.get('dataCriacaoFim')!.invalid"
+                  [class.ng-dirty]="editForm.get('dataCriacaoFim')!.touched"
+                ></p-calendar>
+                <i
+                  id="dataIcone"
+                  *ngIf="
+                    editForm.get('dataCriacaoFim')!.invalid &&
+                    editForm.get('dataCriacaoFim')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+                <small
+                  *ngIf="
+                    editForm.get('dataCriacaoFim')!.invalid &&
+                    editForm.get('dataCriacaoFim')!.touched
+                  "
+                  class="p-error block"
+                  >Este campo é de preenchimento obrigatório.
+                </small>
+                <small
+                  *ngIf="
+                    condicaoFimInicio() &&
+                    editForm.get('dataCriacaoFim')!.touched
+                  "
+                  class="p-error block"
+                  >Este campo deve ter uma data igual ou superior a Data de
+                  Criação inicial.
+                </small>
+                <small
+                  *ngIf="
+                    condicaoJanelaDoisDias(
+                      editForm.get('dataCriacaoInicio')!.value,
+                      editForm.get('dataCriacaoFim')!.value
+                    )
+                  "
+                  class="p-error block"
+                  >Este campo deve ter uma data com no máximo 2 dias da Data de
+                  Criação inicial.
+                </small>
+              </div>
+            </div>
+          </section>
+        </form>
+      </div>
+
+      <div class="card-footer bg-white text-end">
+        <button
+          id="bto-limpar"
+          type="button"
+          class="btn btn-white me-2"
+          (click)="limpar()"
+        >
+          <i class="fa fa-refresh fa-lg me-2"></i>
+          Limpar
+        </button>
+
+        <button
+          id="bto-pesquisar"
+          class="btn btn-primary"
+          (click)="pesquisar()"
+          [disabled]="
+            condicaoFimInicio() ||
+            condicaoJanelaDoisDias(
+              editForm.get('dataCriacaoInicio')!.value,
+              editForm.get('dataCriacaoFim')!.value
+            ) ||
+            editForm.invalid
+          "
+        >
+          <i class="fa fa-search fa-lg me-2"></i>
+          Pesquisar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h5 class="m-0">Resultado</h5>
+      </div>
+
+      <div class="card-body">
+        <div id="entidades" class="tab-content p-3">
+          <p-table
+            #tabela
+            [value]="auditoriaFiltrados"
+            styleClass="p-datatable-striped"
+            responsiveLayout="stack"
+            [breakpoint]="'960px'"
+            [selectionPageOnly]="true"
+            dataKey="id"
+            [(selection)]="selecionados"
+            [rowSelectable]="linhaSelecionavel"
+            [globalFilterFields]="globalFilterFields()"
+            [resizableColumns]="true"
+            [columns]="selectedColumns"
+            [reorderableColumns]="true"
+            columnResizeMode="fit"
+            [loading]="carregando"
+            [lazy]="false"
+            (onLazyLoad)="lazyLoad($event)"
+            selectionMode="single"
+            [paginator]="true"
+            [rows]="itemsPerPage"
+            [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[10, 25, 50]"
+            currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} registros"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th
+                  *ngFor="let col of selectedColumns"
+                  pResizableColumn
+                  pReorderableColumn
+                  [pSortableColumn]="col.dataMap"
+                >
+                  <div class="top-header">
+                    {{ col.header }}
+                    <p-columnFilter
+                      [type]="col.type"
+                      [field]="col.dataMap"
+                      display="menu"
+                    ></p-columnFilter>
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                  </div>
+                </th>
+                <th></th>
+              </tr>
+            </ng-template>
+
+            <ng-template
+              pTemplate="body"
+              let-item
+              let-columns="selectedColumns"
+              let-index="rowIndex"
+            >
+              <tr
+                [pSelectableRow]="item"
+                [pReorderableRow]="index"
+                (click)="visualizarDados(item.id)"
+              >
+                <td *ngFor="let col of selectedColumns">
+                  <div
+                    [innerHTML]="item | getData : col.dataMap | bindField : col"
+                  ></div>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td></td>
+                <td [attr.colspan]="numCols">
+                  <span>Nenhum registro foi encontrado</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

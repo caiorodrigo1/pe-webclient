@@ -1,0 +1,488 @@
+<top-cabecalho
+  [itens]="['Processos', 'pesquisar']"
+  recipiente="Pesquisa de Processos"
+  [entidade]="recipiente"
+></top-cabecalho>
+
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header bg-primary p-1"></div>
+
+      <div class="card-body">
+        <form
+          class="formulario"
+          name="editForm"
+          role="form"
+          novalidate
+          (ngSubmit)="pesquisar()"
+          [formGroup]="editForm"
+        >
+          <section class="row">
+            <div class="col-md-3">
+              <div class="p-input-icon-right w-100">
+                <label for="campo_numero" class="label-campo">
+                  <strong>Número do Processo:&nbsp;</strong
+                  ><span class="text-danger">*</span></label
+                >
+                <p-inputMask
+                  inputId="campo_numero"
+                  name="numero"
+                  formControlName="numero"
+                  mask="99999.999999/9999"
+                  [unmask]="true"
+                  placeholder="99999.999999/9999"
+                  [class.ng-invalid]="
+                    editForm.get('numero')!.invalid &&
+                    editForm.get('dataCriacaoInicio')!.invalid &&
+                    editForm.get('dataCriacaoFim')!.invalid
+                  "
+                  [class.ng-dirty]="editForm.get('numero')!.touched"
+                ></p-inputMask>
+
+                <i
+                  id="maskIcone"
+                  *ngIf="
+                editForm.get('numero')!.invalid &&
+                editForm.get('numero')!.touched && editForm.get('dataCriacaoInicio')!.errors?.['required']&& editForm.get('dataCriacaoFim')!.errors?.['required'] 
+              "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('numero')!.errors?.['required'] && editForm.get('numero')!.touched && editForm.get('dataCriacaoInicio')!.errors?.['required'] && editForm.get('dataCriacaoFim')!.errors?.['required']"
+                class="p-error block"
+                >Este campo é obrigatório.
+              </small>
+              <small
+                *ngIf="editForm.get('numero')!.errors?.['minlength'] && editForm.get('numero')!.touched"
+                class="p-error block"
+                >Número do contrato inválido.
+              </small>
+            </div>
+
+            <div class="col-md-3">
+              <div>
+                <label for="float-label1" class="label-campo">
+                  <strong>Órgão:</strong>
+                </label>
+                <p-dropdown
+                  [options]="orgaos"
+                  name="orgao"
+                  formControlName="orgao"
+                  optionLabel="sigla"
+                  placeholder="Selecione o Órgão"
+                  inputId="float-label1"
+                  [filter]="true"
+                  filterBy="sigla"
+                  filterPlaceholder="Procurar Órgão"
+                  emptyFilterMessage="Nenhum resultado encontrado"
+                  dataKey="id"
+                  (onChange)="onChangeOrgao($event.value.id)"
+                ></p-dropdown>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div>
+                <label for="float-label2" class="label-campo">
+                  <strong>Setor:</strong>
+                </label>
+                <p-dropdown
+                  [options]="setores"
+                  name="setor"
+                  formControlName="setor"
+                  optionLabel="sigla"
+                  placeholder="Selecione o Setor"
+                  inputId="float-label2"
+                  [filter]="true"
+                  filterBy="sigla"
+                  filterPlaceholder="Procurar setor"
+                  emptyFilterMessage="Nenhum resultado encontrado"
+                  dataKey="id"
+                ></p-dropdown>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label for="campo_interessados" class="label-campo">
+                <strong>Interessado:&nbsp;</strong></label
+              >
+              <div class="p-input-icon-right w-100">
+                <input
+                  pInputText
+                  id="campo_interessados"
+                  name="interessados"
+                  formControlName="interessados"
+                  type="text"
+                  maxlength="50"
+                  class="p-inputtext-sm"
+                  [class.ng-invalid]="editForm.get('interessados')!.invalid"
+                  [class.ng-dirty]="editForm.get('interessados')!.touched"
+                />
+                <i
+                  *ngIf="
+                    editForm.get('interessados')!.invalid &&
+                    editForm.get('interessados')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('interessados')!.errors?.['minlength'] && editForm.get('interessados')!.touched"
+                class="p-error block"
+                >Este campo deve ter pelo menos 2 caracteres.
+              </small>
+
+              <small
+                *ngIf="editForm.get('interessados')!.errors?.['maxlength']"
+                class="p-error block"
+              >
+                Este campo não pode ter mais de 50 caracteres.
+              </small>
+            </div>
+          </section>
+
+          <section class="row">
+            <div class="col-md-4">
+              <label for="campo_assunto" class="label-campo">
+                <strong>Assunto:&nbsp;</strong></label
+              >
+              <div class="p-input-icon-right w-100">
+                <input
+                  pInputText
+                  id="campo_assunto"
+                  name="assunto"
+                  formControlName="assunto"
+                  type="text"
+                  maxlength="50"
+                  class="p-inputtext-sm"
+                  [class.ng-invalid]="editForm.get('assunto')!.invalid"
+                  [class.ng-dirty]="editForm.get('assunto')!.touched"
+                />
+                <i
+                  *ngIf="
+                    editForm.get('assunto')!.invalid &&
+                    editForm.get('assunto')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+              </div>
+              <small
+                *ngIf="editForm.get('assunto')!.errors?.['minlength'] && editForm.get('assunto')!.touched"
+                class="p-error block"
+                >Este campo deve ter pelo menos 2 caracteres.
+              </small>
+
+              <small
+                *ngIf="editForm.get('assunto')!.errors?.['maxlength']"
+                class="p-error block"
+              >
+                Este campo não pode ter mais de 50 caracteres.
+              </small>
+            </div>
+
+            <div class="col-md-4">
+              <label for="campo_dataCriacaoInicio" class="label-campo"
+                ><strong>Data de Criação (início):</strong
+                ><span class="text-danger">*</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <p-calendar
+                  inputId="campo_dataCriacaoInicio"
+                  name="dataCriacaoInicio"
+                  formControlName="dataCriacaoInicio"
+                  [showIcon]="true"
+                  dateFormat="dd/mm/yy"
+                  placeholder="dd/mm/aaaa"
+                  [showButtonBar]="true"
+                  [maxDate]="hoje"
+                  [class.ng-invalid]="
+                    editForm.get('dataCriacaoInicio')!.invalid &&
+                    editForm.get('numero')!.invalid
+                  "
+                  [class.ng-dirty]="editForm.get('dataCriacaoInicio')!.touched"
+                ></p-calendar>
+                <i
+                  id="dataIcone"
+                  *ngIf="
+                    editForm.get('dataCriacaoInicio')!.invalid &&
+                    editForm.get('numero')!.invalid &&
+                    editForm.get('dataCriacaoInicio')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+                <small
+                  *ngIf="
+                    editForm.get('dataCriacaoInicio')!.invalid &&
+                    editForm.get('numero')!.invalid &&
+                    editForm.get('dataCriacaoInicio')!.touched
+                  "
+                  class="p-error block"
+                  >Este campo é de preenchimento obrigatório.</small
+                >
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label for="campo_dataCriacaoFim" class="label-campo"
+                ><strong>Data de Criação (fim):</strong
+                ><span class="text-danger">*&nbsp;</span></label
+              >
+              <div class="p-input-icon-right w-100">
+                <p-calendar
+                  inputId="campo_dataCriacaoFim"
+                  name="dataCriacaoFim"
+                  formControlName="dataCriacaoFim"
+                  [showIcon]="true"
+                  dateFormat="dd/mm/yy"
+                  placeholder="dd/mm/aaaa"
+                  [showButtonBar]="true"
+                  [maxDate]="hoje"
+                  [class.ng-invalid]="
+                    editForm.get('dataCriacaoFim')!.invalid &&
+                    editForm.get('numero')!.invalid
+                  "
+                  [class.ng-dirty]="editForm.get('dataCriacaoFim')!.touched"
+                ></p-calendar>
+                <i
+                  id="dataIcone"
+                  *ngIf="
+                    editForm.get('dataCriacaoFim')!.invalid &&
+                    editForm.get('numero')!.invalid &&
+                    editForm.get('dataCriacaoFim')!.touched
+                  "
+                  class="pi pi-exclamation-circle text-danger"
+                ></i>
+                <small
+                  *ngIf="
+                    editForm.get('dataCriacaoFim')!.invalid &&
+                    editForm.get('numero')!.invalid &&
+                    editForm.get('dataCriacaoFim')!.touched
+                  "
+                  class="p-error block"
+                  >Este campo é de preenchimento obrigatório.
+                </small>
+                <small
+                  *ngIf="
+                    editForm.get('dataCriacaoFim')!.value! <
+                      editForm.get('dataCriacaoInicio')!.value! &&
+                    editForm.get('dataCriacaoFim')!.touched
+                  "
+                  class="p-error block"
+                  >A data final não pode ser menor que a data inicial
+                </small>
+              </div>
+            </div>
+          </section>
+
+          <section class="row">
+            <label for="campo_conteudo" class="label-campo"
+              ><strong>Conteúdo:&nbsp;</strong></label
+            >
+            <div class="p-float-label p-input-icon-right col-md-12">
+              <textarea
+                pInputTextarea
+                id="campo_conteudo"
+                name="conteudo"
+                formControlName="conteudo"
+                [autoResize]="true"
+                maxlength="200"
+                [class.ng-invalid]="editForm.get('conteudo')!.invalid"
+                [class.ng-dirty]="editForm.get('conteudo')!.touched"
+              ></textarea>
+              <i
+                id="areaTextoIcone"
+                *ngIf="
+                  editForm.get('conteudo')!.invalid &&
+                  editForm.get('conteudo')!.touched
+                "
+                class="pi pi-exclamation-circle text-danger"
+              ></i>
+            </div>
+            <small
+              *ngIf="editForm.get('conteudo')!.errors?.['maxlength']"
+              class="p-error block"
+              >Este campo não pode ter mais de 200 caracteres.</small
+            >
+          </section>
+        </form>
+      </div>
+
+      <div class="card-footer bg-white text-end">
+        <button
+          id="bto-voltar"
+          type="button"
+          class="btn btn-white me-2"
+          (click)="limpar()"
+        >
+          <i class="fa fa-refresh fa-lg me-2"></i>
+          Limpar
+        </button>
+
+        <button
+          id="bto-salvar"
+          class="btn btn-primary"
+          (click)="pesquisar()"
+          [disabled]="habilitarPesquisa()"
+        >
+          <i class="fa fa-search fa-lg me-2"></i>
+          Pesquisar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h5 class="m-0">Resultado</h5>
+      </div>
+
+      <div class="card-body">
+        <div id="entidades" class="tab-content p-3">
+          <p-table
+            #tabela
+            [value]="processosFiltrados"
+            styleClass="p-datatable-striped"
+            responsiveLayout="stack"
+            [breakpoint]="'960px'"
+            [selectionPageOnly]="true"
+            dataKey="id"
+            [(selection)]="selecionados"
+            [rowSelectable]="linhaSelecionavel"
+            [globalFilterFields]="globalFilterFields()"
+            [resizableColumns]="true"
+            [columns]="selectedColumns"
+            [reorderableColumns]="true"
+            columnResizeMode="fit"
+            [loading]="pesquisando"
+            [lazy]="false"
+            (onLazyLoad)="lazyLoad($event)"
+            [paginator]="true"
+            [rows]="itemsPerPage"
+            [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[10, 25, 50]"
+            currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} registros"
+          >
+            <!-- <ng-template pTemplate="caption">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <p-multiSelect
+                    inputId="selecao_colunas"
+                    [options]="cols"
+                    [(ngModel)]="selectedColumns"
+                    optionLabel="header"
+                    selectedItemsLabel="{0} colunas selecionadas"
+                    [style]="{ 'min-width': '200px' }"
+                    placeholder="Selecionar colunas"
+                    class="selectColumns mx-2"
+                  >
+                  </p-multiSelect>
+                </div>
+              </div>
+            </ng-template> -->
+
+            <ng-template pTemplate="header">
+              <tr>
+                <!-- <th>
+                  <p-tableHeaderCheckbox
+                    inputId="selecao_checkboxes"
+                  ></p-tableHeaderCheckbox>
+                </th> -->
+                <th
+                  *ngFor="let col of selectedColumns"
+                  pResizableColumn
+                  pReorderableColumn
+                  [pSortableColumn]="col.dataMap"
+                >
+                  <div class="top-header">
+                    {{ col.header }}
+                    <p-columnFilter
+                      [type]="col.type"
+                      [field]="col.dataMap"
+                      display="menu"
+                    ></p-columnFilter>
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                  </div>
+                </th>
+                <!-- <th>Opções</th> -->
+              </tr>
+            </ng-template>
+
+            <ng-template
+              pTemplate="body"
+              let-item
+              let-columns="selectedColumns"
+              let-index="rowIndex"
+            >
+              <tr [pSelectableRow]="item" [pReorderableRow]="index">
+                <!-- <td>
+                  <div
+                    class="btn-group d-flex justify-content-between align-items-center"
+                  >
+                    <p-tableCheckbox
+                      [inputId]="'checkBox-' + item.id"
+                      [value]="item"
+                    ></p-tableCheckbox>
+                  </div>
+                </td> -->
+                <td *ngFor="let col of selectedColumns">
+                  <div
+                    *ngIf="
+                      col.field === 'numeroProcesso';
+                      then blocoNumero;
+                      else blocoOutros
+                    "
+                  ></div>
+
+                  <ng-template #blocoNumero>
+                    <div
+                      (click)="visualizarDados(item.id)"
+                      class="link-visualizar"
+                      [innerHTML]="
+                        item | getData : col.dataMap | bindField : col
+                      "
+                    ></div>
+                  </ng-template>
+
+                  <ng-template #blocoOutros>
+                    <div
+                      [innerHTML]="
+                        item | getData : col.dataMap | bindField : col
+                      "
+                    ></div>
+                  </ng-template>
+                </td>
+                <!-- <td>
+                  <div id="processoOpcoes">
+                    <p-splitButton
+                      #split1
+                      label="Opções"
+                      appendTo="body"
+                      (onClick)="split1.onDropdownButtonClick($event)"
+                      (onDropdownClick)="selecionarItem(item)"
+                      [model]="opcoes1"
+                    >
+                    </p-splitButton>
+                  </div>
+                </td> -->
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td></td>
+                <td [attr.colspan]="numCols">
+                  <span>Nenhum registro foi encontrado</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

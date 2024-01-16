@@ -1,0 +1,35 @@
+<main class="formulario modal-body mt-3">
+  <section class="row">
+    <div class="col-md-11">
+      <div class="p-float-label" style="margin-top: 20px">
+        <p-dropdown
+          [options]="listaUsuarios"
+          [(ngModel)]="usuarioSelecionado"
+          optionLabel="nome"
+          placeholder="Selecione o Usuário"
+          inputId="campo_usuario"
+          [filter]="true"
+          filterBy="nome"
+          filterPlaceholder="Procurar Usuário"
+          emptyFilterMessage="Nenhum resultado encontrado"
+          dataKey="id"
+        ></p-dropdown>
+        <label style="font-size: 12px" for="campo_usuario"
+          >Selecione o Usuário Destino</label
+        >
+      </div>
+    </div>
+  </section>
+
+  <hr />
+
+  <footer class="d-flex justify-content-end">
+    <button
+      class="btn btn-primary"
+      [disabled]="distribuindo"
+      (click)="distribuir()"
+    >
+      Distribuir
+    </button>
+  </footer>
+</main>
