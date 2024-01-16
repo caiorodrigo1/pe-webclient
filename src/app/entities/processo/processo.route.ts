@@ -5,7 +5,7 @@ import { ProcessoComponent } from './containers/geral/processo.component';
 import { ProcessoCriarComponent } from './components/processo-criar/processo-criar.component';
 import { ProcessoVisualizarComponent } from './components/processo-visualizar/processo-visualizar.component';
 import { ProcessoDespachoComponent } from './components/processo-despacho/processo-despacho.component';
-import { PesquisaProcessoComponent } from './containers/pesquisa/pesquisaProcesso.component';
+import { PesquisaProcessoComponent } from './containers/pesquisa/pesquisa-processo.component';
 
 export const processoRoute: Routes = [
   {

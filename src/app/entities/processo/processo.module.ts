@@ -5,7 +5,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { processoRoute } from './processo.route';
 
 import { ProcessoComponent } from './containers/geral/processo.component';
-import { PesquisaProcessoComponent } from './containers/pesquisa/pesquisaProcesso.component';
+import { PesquisaProcessoComponent } from './containers/pesquisa/pesquisa-processo.component';
 import { ProcessoCriarComponent } from './components/processo-criar/processo-criar.component';
 import { ProcessoGeralComponent } from './components/processo-criar/processo-geral/processo-geral.component';
 import { ProcessoDocumentoComponent } from './components/processo-criar/processo-documento/processo-documento.component';
