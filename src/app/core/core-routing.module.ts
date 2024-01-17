@@ -12,7 +12,7 @@ const routes: Routes = [
       import('./../entities/entity.module').then((m) => m.EntityModule),
   },
 ];
-
+//ok
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [],
